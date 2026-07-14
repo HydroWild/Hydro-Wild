@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HydroWild — Get Wild. Stay Hydrated.</title>
+  <meta name="description" content="Zero-sugar, zero-dye, science-backed hydration for kids and teens. Electrolytes + 7 vitamins. Get wild. Stay hydrated." />
+  <link rel="icon" type="image/svg+xml" href="/assets/logos/logo-triangle.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,700;0,900;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body>
+  <!-- ══ NAV ══ -->
+  <header class="nav" id="nav">
+    <a href="/" class="nav__logo">
+      <img src="/assets/logos/logo-white.svg" alt="HydroWild" />
+    </a>
+    <nav class="nav__links">
+      <a href="#flavors">Flavors</a>
+      <a href="#science">The Science</a>
+      <a href="#story">Our Story</a>
+      <a href="/product.html?flavor=blue-raspberry">Shop</a>
+    </nav>
+    <button class="nav__cart" id="cartToggle" aria-label="Open cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6L5 3H2"/></svg>
+      <span class="nav__cart-count" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="hero">
+    <div class="hero__bubbles" id="bubbles"></div>
+    <div class="hero__inner">
+      <p class="hero__eyebrow" data-hero-fade>Zero sugar · Zero dyes · 100% wild</p>
+      <h1 class="hero__title">
+        <span class="hero__line"><span data-hero-word>GET</span> <span data-hero-word class="hero__title-accent">WILD.</span></span>
+        <span class="hero__line"><span data-hero-word>STAY</span> <span data-hero-word class="hero__title-accent--green">HYDRATED.</span></span>
+      </h1>
+      <p class="hero__sub" data-hero-fade>Science-backed hydration for kids &amp; teens. Electrolytes, 7 vitamins, nothing artificial — and a legendary creature in every flavor.</p>
+      <div class="hero__cta" data-hero-fade>
+        <a href="#flavors" class="btn btn--primary">Meet the flavors</a>
+        <a href="/product.html?flavor=blue-raspberry" class="btn btn--ghost">Shop now</a>
+      </div>
+    </div>
+    <div class="hero__packs" aria-hidden="true">
+      <img src="/assets/img/pack-blue-raspberry.png" alt="" class="hero__pack" data-float="1" />
+      <img src="/assets/img/pack-watermelon.png" alt="" class="hero__pack" data-float="2" />
+      <img src="/assets/img/pack-strawberry-lemonade.png" alt="" class="hero__pack" data-float="3" />
+      <img src="/assets/img/pack-fruit-punch.png" alt="" class="hero__pack" data-float="4" />
+    </div>
+    <div class="hero__scroll-hint">scroll to explore <span>▾</span></div>
+  </section>
+
+  <!-- ══ MARQUEE ══ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marqueeTrack">
+      <span>NO SUGAR ✦ NO DYES ✦ ELECTROLYTES ✦ 7 VITAMINS ✦ KID-APPROVED ✦ SCIENCE-BACKED ✦&nbsp;</span>
+      <span>NO SUGAR ✦ NO DYES ✦ ELECTROLYTES ✦ 7 VITAMINS ✦ KID-APPROVED ✦ SCIENCE-BACKED ✦&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- ══ FLAVOR WORLDS (injected by JS) ══ -->
+  <section class="worlds" id="flavors"></section>
+
+  <!-- ══ SCIENCE ══ -->
+  <section class="science" id="science">
+    <div class="science__inner">
+      <p class="section-eyebrow" data-reveal>Clean ingredients only</p>
+      <h2 class="section-title" data-reveal>BUILT IN A LAB.<br /><em>BORN IN THE WILD.</em></h2>
+      <div class="science__stats">
+        <div class="stat" data-reveal><span class="stat__num" data-count="0">0</span><span class="stat__unit">g</span><p>sugar. Ever.</p></div>
+        <div class="stat" data-reveal><span class="stat__num" data-count="7">0</span><span class="stat__unit"></span><p>essential vitamins</p></div>
+        <div class="stat" data-reveal><span class="stat__num" data-count="2">0</span><span class="stat__unit"></span><p>key electrolytes — potassium &amp; magnesium</p></div>
+        <div class="stat" data-reveal><span class="stat__num" data-count="100">0</span><span class="stat__unit">%</span><p>free of artificial dyes</p></div>
+      </div>
+      <div class="science__compare" data-reveal>
+        <img src="/assets/img/comparison-chart.png" alt="HydroWild vs sugary sports drinks comparison chart" loading="lazy" />
+        <div class="science__compare-copy">
+          <h3>Most "kids drinks" are candy in a bottle.</h3>
+          <p>The big sports drink brands pack more sugar than a donut and color it with petroleum-based dyes. HydroWild delivers real electrolytes and vitamins, sweetened with stevia — nothing your kid doesn't need.</p>
+          <a href="/product.html?flavor=blue-raspberry" class="btn btn--primary">See what's inside</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ VIDEO ══ -->
+  <section class="film" id="film">
+    <video class="film__video" src="/assets/video/brand-video.mp4" poster="/assets/video/brand-video-poster.jpg" muted loop playsinline preload="metadata"></video>
+    <div class="film__overlay">
+      <h2 class="film__title" data-reveal>HYDRATION,<br />UNLEASHED.</h2>
+    </div>
+  </section>
+
+  <!-- ══ STORY ══ -->
+  <section class="story" id="story">
+    <div class="story__inner">
+      <img src="/assets/img/founders.png" alt="CJ and Lindey Britton, founders of HydroWild" class="story__img" data-reveal loading="lazy" />
+      <div class="story__copy" data-reveal>
+        <p class="section-eyebrow">Our story</p>
+        <h2 class="section-title">MADE BY PARENTS.<br /><em>NOT A LAB COAT COMMITTEE.</em></h2>
+        <p>HydroWild was founded in 2022 by CJ and Lindey Britton in Birmingham, Alabama — two parents who got tired of choosing between hydration and a sugar crash. So they built the drink they wished existed: clean, science-backed, and wild enough that kids actually ask for it.</p>
+        <a href="https://hydrowild.com/pages/our-story" class="btn btn--ghost" target="_blank" rel="noopener">Read the full story</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FINAL CTA ══ -->
+  <section class="cta">
+    <div class="cta__creatures" aria-hidden="true">
+      <img src="/assets/img/creature-kraken.png" alt="" data-cta-creature />
+      <img src="/assets/img/creature-nessie.png" alt="" data-cta-creature />
+      <img src="/assets/img/creature-yeti.png" alt="" data-cta-creature />
+      <img src="/assets/img/creature-wampus.png" alt="" data-cta-creature />
+    </div>
+    <h2 class="cta__title" data-reveal>READY TO<br />GET WILD?</h2>
+    <p class="cta__sub" data-reveal>Try all 4 flavors. Find your creature.</p>
+    <button class="btn btn--primary btn--xl" data-reveal id="ctaVariety">Get the Wild Variety Pack — $14.99</button>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <img src="/assets/logos/logo-white.svg" alt="HydroWild" class="footer__logo" />
+    <div class="footer__cols">
+      <div><h4>Shop</h4><a href="/product.html?flavor=blue-raspberry">Blue Raspberry</a><a href="/product.html?flavor=watermelon">Watermelon</a><a href="/product.html?flavor=strawberry-lemonade">Strawberry Lemonade</a><a href="/product.html?flavor=fruit-punch">Fruit Punch</a></div>
+      <div><h4>Company</h4><a href="#story">Our Story</a><a href="#science">Clean Ingredients</a><a href="https://hydrowild.com" target="_blank" rel="noopener">Current Site</a></div>
+    </div>
+    <p class="footer__note">© 2026 HydroWild. Concept build by Ryder Schilling.</p>
+  </footer>
+
+  <!-- ══ CART DRAWER (injected by JS) ══ -->
+  <div id="cartRoot"></div>
+
+  <script type="module" src="/src/js/main.js"></script>
+</body>
+</html>
