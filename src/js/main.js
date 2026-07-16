@@ -262,3 +262,37 @@ document.querySelectorAll('[data-cta-creature]').forEach((img, i) => {
     scrollTrigger: { trigger: '.cta', start: 'top bottom', end: 'bottom top', scrub: 1.2 },
   });
 });
+
+// ── Email opt-in form ──
+const emailForm = document.getElementById('emailOptinForm');
+const emailSuccess = document.getElementById('emailSuccess');
+
+if (emailForm) {
+  emailForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = emailForm.querySelector('.email-optin__input');
+    const email = input.value.trim();
+
+    // Basic validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      input.style.setProperty('color', 'var(--pink)');
+      input.focus();
+      setTimeout(() => input.style.removeProperty('color'), 1200);
+      return;
+    }
+
+    // Success state
+    emailForm.hidden = true;
+    emailSuccess.hidden = false;
+  });
+}
+
+// ── Email optin section reveal ──
+gsap.fromTo(
+  '.email-optin__content',
+  { opacity: 0, y: 40 },
+  {
+    opacity: 1, y: 0, duration: 1, ease: 'power3.out',
+    scrollTrigger: { trigger: '.email-optin', start: 'top 75%' },
+  }
+);

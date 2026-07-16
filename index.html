@@ -133,6 +133,22 @@
     <button class="btn btn--primary btn--xl" data-reveal id="ctaVariety">Get the Wild Variety Pack — $14.99</button>
   </section>
 
+  <!-- ══ EMAIL OPT-IN ══ -->
+  <section class="email-optin" id="email-optin">
+    <div class="email-optin__content">
+      <p class="email-optin__label">Stay Wild. <em>Get the drops.</em></p>
+      <form class="email-optin__form" id="emailOptinForm" novalidate>
+        <div class="email-optin__field">
+          <input type="email" class="email-optin__input" placeholder="your@email.com" aria-label="Email address" required autocomplete="email" />
+          <button type="submit" class="email-optin__btn">Join the Wild</button>
+        </div>
+      </form>
+      <div class="email-optin__success" id="emailSuccess" aria-live="polite" hidden>
+        <span>⚡</span> You're in the pack.
+      </div>
+    </div>
+  </section>
+
   <!-- ══ FOOTER ══ -->
   <footer class="footer">
     <img src="/assets/img/creature-yeti.png" alt="" class="footer__creature" aria-hidden="true" loading="lazy" />
