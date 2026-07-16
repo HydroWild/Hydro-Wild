@@ -1,6 +1,6 @@
 // Shared UI: nav scroll state, cart drawer, toast.
 import { cart } from '../lib/cart.js';
-import { checkout, USE_MOCK } from '../lib/shopify.js';
+import { checkout, USE_MOCK, prefetchVariant } from '../lib/shopify.js';
 
 const fmt = (n) => `$${n.toFixed(2)}`;
 
@@ -26,8 +26,10 @@ export function initCartUI() {
       <div class="cart-drawer__items" id="cartItems"></div>
       <div class="cart-drawer__foot">
         <div class="cart-drawer__total"><span>Total</span><span id="cartTotal">$0.00</span></div>
-        <button class="btn btn--primary" id="cartCheckout">Checkout</button>
-        ${USE_MOCK ? '<p class="cart-drawer__note">Demo mode — checkout hands off to Shopify once API keys are added.</p>' : ''}
+        <button class="btn btn--primary" id="cartCheckout">
+          <span id="cartCheckoutLabel">Checkout</span>
+        </button>
+        ${USE_MOCK ? '<p class="cart-drawer__note">Demo — add your Storefront API token in shopify.js to go live.</p>' : ''}
       </div>
     </aside>
     <div class="toast" id="toast"></div>`;
@@ -47,13 +49,29 @@ export function initCartUI() {
   overlay.addEventListener('click', close);
   document.addEventListener('keydown', (e) => e.key === 'Escape' && close());
 
-  document.getElementById('cartCheckout').addEventListener('click', async () => {
+  const checkoutBtn   = document.getElementById('cartCheckout');
+  const checkoutLabel = document.getElementById('cartCheckoutLabel');
+
+  checkoutBtn.addEventListener('click', async () => {
     if (!cart.items.length) return toast('Your stash is empty — add a flavor first!');
+
+    // Loading state
+    checkoutBtn.disabled = true;
+    if (checkoutLabel) checkoutLabel.textContent = USE_MOCK ? 'Opening…' : 'Sending to checkout…';
+
     try {
-      await checkout(cart.items.map((i) => ({ variantId: i.variantId, qty: i.qty })));
+      await checkout(cart.items);
+      // Only clear cart + reset button if we stayed on the page (mock opens new tab)
+      if (USE_MOCK) {
+        checkoutBtn.disabled = false;
+        if (checkoutLabel) checkoutLabel.textContent = 'Checkout';
+      }
+      // Real mode redirects away so no reset needed
     } catch (err) {
-      toast('Checkout error — try again.');
+      toast(`Checkout error: ${err.message}`);
       console.error(err);
+      checkoutBtn.disabled = false;
+      if (checkoutLabel) checkoutLabel.textContent = 'Checkout';
     }
   });
 
@@ -69,6 +87,9 @@ export function initCartUI() {
   });
 
   cart.subscribe((items) => {
+    // Pre-warm variant ID cache whenever cart changes so checkout is instant
+    items.forEach((item) => { if (item.handle) prefetchVariant(item.handle); });
+
     if (countEl) {
       countEl.textContent = cart.count;
       countEl.classList.add('pop');
