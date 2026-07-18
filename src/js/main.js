@@ -6,6 +6,7 @@ import { FLAVORS, BUNDLES } from '../data/products.js';
 import { cart } from '../lib/cart.js';
 import { initNav, initCartUI } from './ui.js';
 import { initPopup } from './popup.js';
+import { hydrateProducts } from '../lib/shopify.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,24 +63,20 @@ if (bubbleWrap) {
 // ── Marquee ──
 gsap.to('#marqueeTrack', { xPercent: -50, duration: 22, repeat: -1, ease: 'none' });
 
-// ── Spotted in the Wild — UGC wall (placeholder content) ──
-// Mirrors the mock-now/live-later pattern in lib/shopify.js: seeded with real
-// HydroWild product/lifestyle assets today, swap for live IG Graph API data
-// once they grant access.
+// ── Spotted in the Wild — real @drinkhydrowild Instagram posts ──
+const IG_URL = 'https://www.instagram.com/drinkhydrowild/';
 const WALL_POSTS = [
-  { type: 'image', src: '/assets/img/lifestyle-1.png', color: '#29ABE2', creatureImg: '/assets/img/creature-yeti.png', handle: '@sadie.olivia', caption: 'Back to school survival kit 💙', likes: 342 },
-  { type: 'video', src: '/assets/video/brand-video.mp4', poster: '/assets/video/brand-video-poster.jpg', color: '#4ADB14', creatureImg: '/assets/img/creature-wampus.png', handle: '@coach_marcus', caption: 'Halftime hydration check ✅', likes: 891 },
-  { type: 'image', src: '/assets/img/lifestyle-4.png', color: '#4ADB14', creatureImg: '/assets/img/creature-wampus.png', handle: '@thefitmomlife', caption: 'Watermelon > everything else in this house 🍉', likes: 567 },
-  { type: 'image', src: '/assets/img/lifestyle-2.png', color: '#29ABE2', creatureImg: '/assets/img/creature-yeti.png', handle: '@jaxon.does.sports', caption: 'Pre-game ritual 🔵', likes: 423 },
-  { type: 'image', src: '/assets/img/lifestyle-3.png', color: '#FF3ECD', creatureImg: '/assets/img/creature-nessie.png', handle: '@averyandthekids', caption: 'Nessie made them drink it, not me 🍋', likes: 612 },
-  { type: 'image', src: '/assets/img/pack-strawberry-lemonade.png', color: '#FF3ECD', creatureImg: '/assets/img/creature-nessie.png', handle: '@beachdaywithkids', caption: 'Sunglasses on, HydroWild in hand', likes: 289 },
-  { type: 'image', src: '/assets/img/pack-fruit-punch.png', color: '#E80011', creatureImg: '/assets/img/creature-kraken.png', handle: '@travel_with_tanner', caption: 'Road trip essential 🧡', likes: 754 },
+  { type: 'image', src: '/assets/img/ig-blue-raspberry-pour.jpg',  color: '#29ABE2', creatureImg: '/assets/img/creature-yeti.png',   handle: '@drinkhydrowild', caption: 'Plant-based, pediatrician-approved & scientifically-formulated 💙', likes: 1204 },
+  { type: 'image', src: '/assets/img/ig-maximo-approved.jpg',      color: '#29ABE2', creatureImg: '/assets/img/creature-yeti.png',   handle: '@drinkhydrowild', caption: 'Maximo approved ✅ #GetWild', likes: 876 },
+  { type: 'image', src: '/assets/img/ig-strawberry-lemon.jpg',     color: '#FF3ECD', creatureImg: '/assets/img/creature-nessie.png', handle: '@drinkhydrowild', caption: 'Strawberry Lemonade hits different 🍓🍋', likes: 3102 },
+  { type: 'image', src: '/assets/img/ig-swap-that.jpg',            color: '#FF3ECD', creatureImg: '/assets/img/creature-nessie.png', handle: '@drinkhydrowild', caption: 'Swap that for this. 9 essential nutrients, zero junk 🔄', likes: 2210 },
+  { type: 'image', src: '/assets/img/ig-all-flavors.jpg',          color: '#4ADB14', creatureImg: '/assets/img/creature-wampus.png', handle: '@drinkhydrowild', caption: 'Four flavors. Four legendary creatures. One wild pack 🌟', likes: 4587 },
 ];
 
 const wallTrack = document.getElementById('wallTrack');
 if (wallTrack) {
   const cardHTML = (p) => `
-    <div class="wall__card" style="--flavor:${p.color}">
+    <a class="wall__card" href="${IG_URL}" target="_blank" rel="noopener" style="--flavor:${p.color}">
       <img class="wall__badge" src="${p.creatureImg}" alt="" aria-hidden="true" />
       <div class="wall__media">
         ${
@@ -93,7 +90,7 @@ if (wallTrack) {
           <span class="wall__likes">♥ ${p.likes.toLocaleString()}</span>
         </div>
       </div>
-    </div>`;
+    </a>`;
 
   // Duplicate the set so the strip can loop seamlessly, same trick as the marquee.
   wallTrack.innerHTML = [...WALL_POSTS, ...WALL_POSTS].map(cardHTML).join('');
@@ -187,6 +184,19 @@ FLAVORS.forEach((f, i) => {
   // gliding straight into the next world.
 });
 
+// ── Starter Kit section entrance ──
+if (document.querySelector('.starter')) {
+  gsap.set('.starter__photo', { opacity: 0 });
+  gsap.set('.starter__copy > *', { opacity: 0, y: 28 });
+  ScrollTrigger.create({
+    trigger: '.starter', start: 'top 78%', once: true,
+    onEnter: () => {
+      gsap.to('.starter__photo', { opacity: 1, duration: 1.1, ease: 'power2.out', clearProps: 'opacity' });
+      gsap.to('.starter__copy > *', { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out', clearProps: 'transform,opacity', delay: 0.2 });
+    },
+  });
+}
+
 // ── Bundle section entrance — single clean block, no child conflicts ──
 if (document.querySelector('.bundle__visual')) {
   gsap.set('.bundle__copy', { opacity: 0, x: -28 });
@@ -200,10 +210,78 @@ if (document.querySelector('.bundle__visual')) {
   });
 }
 
+// ── Price hydration — pull live Shopify prices + compare prices ──
+hydrateProducts(BUNDLES.map((b) => b.handle)).then((priceMap) => {
+  BUNDLES.forEach((b) => {
+    const data = priceMap.get(b.handle);
+    if (!data) return;
+    b.price = data.price;
+    if (data.comparePrice) b.comparePrice = data.comparePrice;
+  });
+
+  // Helper: update a price display group
+  function applyPrices(currentEl, compareEl, compareTextEl, badgeEl, price, comparePrice) {
+    if (currentEl) currentEl.textContent = `$${price.toFixed(2)}`;
+    if (comparePrice && compareEl && compareTextEl && badgeEl) {
+      compareTextEl.textContent = `$${comparePrice.toFixed(2)}`;
+      compareEl.hidden = false;
+      badgeEl.textContent = `SAVE $${(comparePrice - price).toFixed(2)}`;
+      badgeEl.hidden = false;
+    }
+  }
+
+  // Variety Pack — bundle section
+  const vp = priceMap.get(BUNDLES[0].handle);
+  if (vp) applyPrices(
+    document.getElementById('bundleCurrentPrice'),
+    document.getElementById('bundleComparePrice'),
+    document.getElementById('bundleComparePriceText'),
+    document.getElementById('bundleSaveBadge'),
+    vp.price, vp.comparePrice
+  );
+
+  // Variety Pack — CTA section
+  if (vp) applyPrices(
+    document.getElementById('ctaVarietyPrice'),
+    document.getElementById('ctaVarietyCompare'),
+    document.getElementById('ctaVarietyCompareText'),
+    document.getElementById('ctaVarietyBadge'),
+    vp.price, vp.comparePrice
+  );
+
+  // Starter Kit — always has comparePrice ($49.99 vs $24.99)
+  const sk = priceMap.get(BUNDLES[1]?.handle) ?? { price: BUNDLES[1]?.price, comparePrice: BUNDLES[1]?.comparePrice };
+  if (sk) {
+    const priceEl = document.getElementById('starterKitPrice');
+    const compareEl = document.getElementById('starterKitCompare');
+    const badgeEl = document.getElementById('starterKitBadge');
+    if (priceEl) priceEl.textContent = `$${sk.price.toFixed(2)}`;
+    if (compareEl && sk.comparePrice) compareEl.textContent = `$${sk.comparePrice.toFixed(2)}`;
+    if (badgeEl && sk.comparePrice) badgeEl.textContent = `SAVE $${(sk.comparePrice - sk.price).toFixed(2)}`;
+  }
+}).catch(() => {
+  // Non-fatal — static prices already rendered in HTML
+  // Still update Starter Kit badge from static data
+  const sk = BUNDLES[1];
+  if (sk?.comparePrice) {
+    const badgeEl = document.getElementById('starterKitBadge');
+    const compareEl = document.getElementById('starterKitCompare');
+    if (badgeEl) badgeEl.textContent = `SAVE $${(sk.comparePrice - sk.price).toFixed(2)}`;
+    if (compareEl) compareEl.textContent = `$${sk.comparePrice.toFixed(2)}`;
+  }
+});
+
 // Bundle CTA
 document.getElementById('bundleAddToCart')?.addEventListener('click', () => {
   cart.add({ ...BUNDLES[0], packImg: BUNDLES[0].img });
   cartUI?.toast('Wild Variety Pack added!');
+  cartUI?.open();
+});
+
+// Starter Kit CTA
+document.getElementById('starterKitAddToCart')?.addEventListener('click', () => {
+  cart.add({ ...BUNDLES[1], packImg: BUNDLES[1].img });
+  cartUI?.toast('Wild Starter Kit added!');
   cartUI?.open();
 });
 
@@ -282,22 +360,65 @@ const emailForm = document.getElementById('emailOptinForm');
 const emailSuccess = document.getElementById('emailSuccess');
 
 if (emailForm) {
-  emailForm.addEventListener('submit', (e) => {
+  emailForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = emailForm.querySelector('.email-optin__input');
+    const submitBtn = emailForm.querySelector('.email-optin__btn');
     const email = input.value.trim();
 
-    // Basic validation
+    // Validate
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      input.style.setProperty('color', 'var(--pink)');
+      const field = emailForm.querySelector('.email-optin__field');
+      if (field) { field.style.borderColor = 'var(--pink)'; setTimeout(() => field.style.borderColor = '', 1400); }
       input.focus();
-      setTimeout(() => input.style.removeProperty('color'), 1200);
       return;
     }
 
-    // Success state
+    // Loading state
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Joining…'; }
+
+    // Save to Shopify
+    try {
+      const DOMAIN = import.meta.env.VITE_SHOPIFY_DOMAIN;
+      const TOKEN  = import.meta.env.VITE_SHOPIFY_TOKEN;
+      if (DOMAIN && TOKEN) {
+        const res = await fetch(`https://${DOMAIN}/api/2025-04/graphql.json`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': TOKEN },
+          body: JSON.stringify({
+            query: `mutation customerCreate($input: CustomerCreateInput!) {
+              customerCreate(input: $input) {
+                customer { id email }
+                customerUserErrors { code message }
+              }
+            }`,
+            variables: {
+              input: {
+                email,
+                password: crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36),
+                acceptsMarketing: true,
+              },
+            },
+          }),
+        });
+        const json = await res.json();
+        console.log('[HydroWild email] Shopify response:', JSON.stringify(json));
+      }
+    } catch (err) {
+      console.warn('[HydroWild email] Save failed:', err.message);
+    }
+
+    // Show success in place of the form
     emailForm.hidden = true;
-    emailSuccess.hidden = false;
+    if (emailSuccess) emailSuccess.hidden = false;
+
+    // Restore form after 4s
+    setTimeout(() => {
+      if (emailSuccess) emailSuccess.hidden = true;
+      emailForm.hidden = false;
+      input.value = '';
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Join the Wild'; }
+    }, 4000);
   });
 }
 

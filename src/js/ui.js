@@ -10,6 +10,78 @@ export function initNav() {
   const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+  initMobileMenu(nav);
+}
+
+function initMobileMenu(nav) {
+  // ── Inject hamburger button into nav (leftmost) ──
+  const burger = document.createElement('button');
+  burger.className = 'nav__hamburger';
+  burger.id = 'navHamburger';
+  burger.setAttribute('aria-label', 'Open menu');
+  burger.setAttribute('aria-expanded', 'false');
+  burger.innerHTML = '<span></span><span></span><span></span>';
+  nav.prepend(burger);
+
+  // ── Inject fullscreen overlay into body ──
+  const menu = document.createElement('div');
+  menu.className = 'mobile-menu';
+  menu.id = 'mobileMenu';
+  menu.setAttribute('aria-hidden', 'true');
+
+  // Mark active page link
+  const currentPath = window.location.pathname;
+  const links = [
+    { href: '/ingredients.html', label: 'The Science' },
+    { href: '/story.html',       label: 'Our Story'   },
+    { href: '/shop.html',        label: 'Shop'        },
+    { href: '/blog.html',        label: 'Blog'        },
+    { href: '/contact.html',     label: 'Contact'     },
+  ];
+
+  const navHTML = links
+    .map(({ href, label }) => {
+      const active = currentPath === href ? ' class="is-active"' : '';
+      return `<a href="${href}"${active}>${label}</a>`;
+    })
+    .join('');
+
+  menu.innerHTML = `
+    <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+      ${navHTML}
+    </nav>
+    <div class="mobile-menu__footer">
+      <a class="mobile-menu__social" href="https://instagram.com/drinkhydrowild" target="_blank" rel="noopener">@drinkhydrowild</a>
+    </div>`;
+
+  document.body.appendChild(menu);
+
+  // ── Toggle logic ──
+  const openMenu = () => {
+    menu.classList.add('is-open');
+    burger.classList.add('is-open');
+    burger.setAttribute('aria-expanded', 'true');
+    menu.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-is-open');
+  };
+
+  const closeMenu = () => {
+    menu.classList.remove('is-open');
+    burger.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+    menu.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('menu-is-open');
+  };
+
+  burger.addEventListener('click', () =>
+    menu.classList.contains('is-open') ? closeMenu() : openMenu()
+  );
+
+  // Close when a nav link is tapped
+  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', closeMenu));
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu());
 }
 
 export function initCartUI() {

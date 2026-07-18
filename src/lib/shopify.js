@@ -129,7 +129,7 @@ export async function hydrateProducts(handles) {
   if (USE_MOCK || !handles.length) return new Map();
 
   // Single batched GraphQL query — one round-trip for all products
-  const fields = `variants(first: 1) { nodes { id availableForSale price { amount } } }`;
+  const fields = `variants(first: 1) { nodes { id availableForSale price { amount } compareAtPrice { amount } } }`;
   const aliases = handles.map((h, i) => `p${i}: product(handle: "${h}") { ${fields} }`).join('\n');
 
   let data;
@@ -144,7 +144,8 @@ export async function hydrateProducts(handles) {
     const variant = data[`p${i}`]?.variants?.nodes?.[0];
     if (!variant) return;
     const price = parseFloat(variant.price.amount);
-    result.set(handle, { price, variantId: variant.id, available: variant.availableForSale });
+    const comparePrice = variant.compareAtPrice?.amount ? parseFloat(variant.compareAtPrice.amount) : null;
+    result.set(handle, { price, comparePrice, variantId: variant.id, available: variant.availableForSale });
     _variantCache.set(handle, variant.id); // warm cache for instant checkout
   });
   return result;

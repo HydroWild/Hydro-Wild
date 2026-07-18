@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Shop All Flavors — HydroWild</title>
   <meta name="description" content="Shop all HydroWild zero-sugar hydration flavors. Blue Raspberry, Watermelon, Strawberry Lemonade, and Fruit Punch." />
   <link rel="icon" type="image/svg+xml" href="/assets/logos/logo-triangle.svg" />
@@ -18,6 +18,7 @@
       <a href="/ingredients.html">The Science</a>
       <a href="/story.html">Our Story</a>
       <a href="/shop.html" style="color:var(--lime)">Shop</a>
+      <a href="/blog.html">Blog</a>
       <a href="/contact.html">Contact</a>
     </nav>
     <button class="nav__cart" id="cartToggle" aria-label="Open cart">
@@ -45,6 +46,8 @@
 
     <!-- Right: sticky bundle panel -->
     <aside class="shop-sidebar">
+
+      <!-- Wild Variety Pack -->
       <div class="shop-bundle" id="shopBundle">
         <div class="shop-bundle__cluster">
           <img src="/assets/img/pack-blue-raspberry.png" alt="" class="shop-bundle__pack" data-bki="0" />
@@ -61,10 +64,38 @@
             <li>✦ Zero sugar &amp; zero dyes</li>
             <li>✦ 9 essential vitamins</li>
           </ul>
-          <p class="shop-bundle__price" id="bundlePrice">$49.99</p>
-          <button class="btn btn--primary" style="width:100%;justify-content:center;display:block;text-align:center;" id="bundleAddCart">Add to Cart</button>
+          <div class="shop-bundle__price-row">
+            <p class="shop-bundle__price" id="variety-packPrice">$49.99</p>
+            <p class="shop-bundle__compare-price"><s id="variety-packComparePrice">$59.96</s></p>
+            <span class="shop-bundle__save-badge" id="variety-packSave">SAVE $9.97</span>
+          </div>
+          <button class="btn btn--primary" style="width:100%;justify-content:center;display:block;text-align:center;" id="variety-packAddCart">Add to Cart</button>
         </div>
       </div>
+
+      <!-- Wild Starter Kit -->
+      <div class="shop-bundle shop-bundle--starter" id="shopStarterKit">
+        <div class="shop-bundle__cluster">
+          <img src="/assets/img/starter-kit.png" alt="Wild Starter Kit" class="shop-bundle__kit-img" />
+        </div>
+        <div class="shop-bundle__copy">
+          <p class="shop-bundle__eyebrow">Perfect intro</p>
+          <h2 class="shop-bundle__title">WILD<br /><em>STARTER</em><br />KIT</h2>
+          <p class="shop-bundle__sub">The perfect intro to HydroWild.</p>
+          <ul class="shop-bundle__perks">
+            <li>✦ Sample all flavors</li>
+            <li>✦ Zero sugar &amp; zero dyes</li>
+            <li>✦ 9 essential vitamins</li>
+          </ul>
+          <div class="shop-bundle__price-row">
+            <p class="shop-bundle__price" id="starter-kitPrice">$24.99</p>
+            <p class="shop-bundle__compare-price"><s id="starter-kitComparePrice">$49.99</s></p>
+            <span class="shop-bundle__save-badge" id="starter-kitSave">SAVE $25.00</span>
+          </div>
+          <button class="btn btn--primary" style="width:100%;justify-content:center;display:block;text-align:center;" id="starter-kitAddCart">Add to Cart</button>
+        </div>
+      </div>
+
     </aside>
 
   </section>
@@ -85,7 +116,8 @@
       </div>
       <div class="footer__cols">
         <div><h4>Shop</h4><a href="/product.html?flavor=blue-raspberry">Blue Raspberry</a><a href="/product.html?flavor=watermelon">Watermelon</a><a href="/product.html?flavor=strawberry-lemonade">Strawberry Lemonade</a><a href="/product.html?flavor=fruit-punch">Fruit Punch</a></div>
-        <div><h4>Company</h4><a href="/story.html">Our Story</a><a href="/#science">Clean Ingredients</a><a href="/shop.html">Shop All</a><a href="/contact.html">Contact</a></div>
+        <div><h4>Company</h4><a href="/story.html">Our Story</a><a href="/#science">Clean Ingredients</a><a href="/shop.html">Shop All</a><a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact</a></div>
       </div>
     </div>
     <div class="footer__bottom">

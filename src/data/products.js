@@ -69,6 +69,15 @@ export const BUNDLES = [
     img: '/assets/img/starter-kit.png',
     price: 49.99,
   },
+  {
+    id: 'starter-kit',
+    handle: 'wild-starter-kit',
+    name: 'The Wild Starter Kit',
+    desc: 'The perfect intro to HydroWild.',
+    img: '/assets/img/starter-kit.png',
+    price: 24.99,
+    comparePrice: 49.99,
+  },
 ];
 
 export const getFlavor = (id) => FLAVORS.find((f) => f.id === id);

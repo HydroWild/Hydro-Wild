@@ -35,22 +35,32 @@ grid.innerHTML = FLAVORS.map((f) => `
 // ── Hydrate prices from Shopify (no-op in mock mode) ──
 const allHandles = [
   ...FLAVORS.map((f) => f.handle),
-  BUNDLES[0].handle,
+  ...BUNDLES.map((b) => b.handle),
 ];
 hydrateProducts(allHandles).then((priceMap) => {
   FLAVORS.forEach((f) => {
     const data = priceMap.get(f.handle);
     if (!data) return;
-    f.price = data.price; // keep in-memory price in sync for cart
+    f.price = data.price;
     const el = document.querySelector(`[data-price-id="${f.id}"]`);
     if (el) el.textContent = `$${data.price.toFixed(2)}`;
   });
-  const bundleData = priceMap.get(BUNDLES[0].handle);
-  if (bundleData) {
-    BUNDLES[0].price = bundleData.price;
-    const el = document.getElementById('bundlePrice');
-    if (el) el.textContent = `$${bundleData.price.toFixed(2)}`;
-  }
+  BUNDLES.forEach((b) => {
+    const data = priceMap.get(b.handle);
+    if (!data) return;
+    b.price = data.price;
+    if (data.comparePrice) b.comparePrice = data.comparePrice;
+    // Update price display
+    const priceEl = document.getElementById(`${b.id}Price`);
+    if (priceEl) priceEl.textContent = `$${data.price.toFixed(2)}`;
+    // Update compare price display
+    if (data.comparePrice) {
+      const compareEl = document.getElementById(`${b.id}ComparePrice`);
+      if (compareEl) compareEl.textContent = `$${data.comparePrice.toFixed(2)}`;
+      const saveEl = document.getElementById(`${b.id}Save`);
+      if (saveEl) saveEl.textContent = `SAVE $${(data.comparePrice - data.price).toFixed(2)}`;
+    }
+  });
 });
 
 // ── Card click → product page (ignore button/link clicks) ──
@@ -72,10 +82,16 @@ document.addEventListener('click', (e) => {
   cartUI?.open();
 });
 
-// ── Bundle ──
-document.getElementById('bundleAddCart')?.addEventListener('click', () => {
+// ── Bundles ──
+document.getElementById('variety-packAddCart')?.addEventListener('click', () => {
   cart.add({ ...BUNDLES[0], packImg: BUNDLES[0].img });
   cartUI?.toast('Wild Variety Pack added!');
+  cartUI?.open();
+});
+
+document.getElementById('starter-kitAddCart')?.addEventListener('click', () => {
+  cart.add({ ...BUNDLES[1], packImg: BUNDLES[1].img });
+  cartUI?.toast('Wild Starter Kit added!');
   cartUI?.open();
 });
 

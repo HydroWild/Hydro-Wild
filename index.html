@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>HydroWild — Get Wild. Stay Hydrated.</title>
   <meta name="description" content="Zero-sugar, zero-dye, science-backed hydration for kids and teens. Electrolytes + 9 essential vitamins. Get wild. Stay hydrated." />
   <link rel="icon" type="image/svg+xml" href="/assets/logos/pink_triangle_logo.svg" />
@@ -19,6 +19,7 @@
       <a href="/ingredients.html">The Science</a>
       <a href="/story.html">Our Story</a>
       <a href="/shop.html">Shop</a>
+      <a href="/blog.html">Blog</a>
       <a href="/contact.html">Contact</a>
     </nav>
     <button class="nav__cart" id="cartToggle" aria-label="Open cart">
@@ -75,8 +76,12 @@
           <li>✦ Zero sugar &amp; zero dyes</li>
         </ul>
         <div class="bundle__cta-wrap" data-reveal>
-          <button class="btn btn--primary btn--xl" id="bundleAddToCart">Get the Wild Variety Pack — $14.99</button>
-          <p class="bundle__save-note">Best way to start. Try all four.</p>
+          <div class="bundle__price-row">
+            <span class="bundle__price-current" id="bundleCurrentPrice">$49.99</span>
+            <span class="bundle__price-compare" id="bundleComparePrice" hidden><s id="bundleComparePriceText"></s></span>
+            <span class="bundle__price-badge" id="bundleSaveBadge" hidden></span>
+          </div>
+          <button class="btn btn--primary btn--xl" id="bundleAddToCart">Get the Wild Variety Pack</button>
         </div>
       </div>
 
@@ -116,6 +121,38 @@
     </div>
   </section>
 
+  <!-- ══ STARTER KIT SPOTLIGHT ══ -->
+  <section class="starter" id="starter-kit">
+
+    <!-- Photoshoot fills the left half, fades into the dark right side -->
+    <div class="starter__photo" aria-hidden="true">
+      <img src="/assets/images/HydroWild_Edit_2026-06-03_2k.png" alt="" loading="lazy" />
+    </div>
+
+    <!-- Copy — right half -->
+    <div class="starter__copy">
+      <p class="starter__eyebrow" data-reveal>New to HydroWild?</p>
+      <h2 class="starter__title" data-reveal>THE WILD<br /><em>STARTER KIT.</em></h2>
+      <p class="starter__sub" data-reveal>Not sure where to start? This is it. Sample every flavor, meet every creature, and find your wild — at half the price.</p>
+      <ul class="starter__perks" data-reveal>
+        <li>✦ Intro to all 4 flavors</li>
+        <li>✦ 9 essential vitamins</li>
+        <li>✦ Zero sugar &amp; zero dyes</li>
+        <li>✦ Best value to try first</li>
+      </ul>
+      <div class="starter__price-row" data-reveal>
+        <span class="starter__price" id="starterKitPrice">$24.99</span>
+        <span class="starter__compare"><s id="starterKitCompare">$49.99</s></span>
+        <span class="starter__badge" id="starterKitBadge">SAVE $25.00</span>
+      </div>
+      <div class="starter__cta" data-reveal>
+        <button class="btn btn--primary btn--xl" id="starterKitAddToCart">Get the Starter Kit</button>
+        <a href="/shop.html" class="btn btn--ghost">See all products</a>
+      </div>
+    </div>
+
+  </section>
+
   <!-- ══ FLAVOR WORLDS (injected by JS) ══ -->
   <section class="worlds" id="flavors"></section>
 
@@ -152,7 +189,7 @@
   <!-- ══ STORY ══ -->
   <section class="story" id="story">
     <div class="story__inner">
-      <img src="/assets/img/founders.png" alt="CJ and Lindey Britton, founders of HydroWild" class="story__img" data-reveal loading="lazy" />
+      <img src="/assets/img/founders.png" alt="CJ and Lindey Britton, founders of HydroWild" class="story__img" loading="lazy" />
       <div class="story__copy" data-reveal>
         <p class="section-eyebrow">Our story</p>
         <h2 class="section-title">MADE BY PARENTS.<br /><em>NOT A LAB COAT COMMITTEE.</em></h2>
@@ -167,12 +204,12 @@
     <div class="wall__head">
       <p class="section-eyebrow" data-reveal>#GetWild</p>
       <h2 class="section-title" data-reveal>SPOTTED IN<br /><em>THE WILD.</em></h2>
-      <p class="wall__sub" data-reveal>Real families, real flavors, real chaos. Tag <strong>@hydrowild</strong> to get featured.</p>
+      <p class="wall__sub" data-reveal>Real families, real flavors, real chaos. Tag <strong>@drinkhydrowild</strong> to get featured.</p>
     </div>
     <div class="wall__strip">
       <div class="wall__track" id="wallTrack"></div>
     </div>
-    <a href="https://instagram.com/hydrowild" class="btn btn--primary wall__cta" target="_blank" rel="noopener" data-reveal>Follow @hydrowild</a>
+    <a href="https://www.instagram.com/drinkhydrowild/" class="btn btn--primary wall__cta" target="_blank" rel="noopener" data-reveal>Follow @drinkhydrowild</a>
   </section>
 
   <!-- ══ FINAL CTA ══ -->
@@ -184,7 +221,12 @@
     </div>
     <h2 class="cta__title" data-reveal>READY TO<br />GET WILD?</h2>
     <p class="cta__sub" data-reveal>Try all 4 flavors. Find your creature.</p>
-    <button class="btn btn--primary btn--xl" data-reveal id="ctaVariety">Get the Wild Variety Pack — $14.99</button>
+    <div class="cta__price-row" data-reveal>
+      <span class="cta__price" id="ctaVarietyPrice">$49.99</span>
+      <span class="cta__compare" id="ctaVarietyCompare" hidden><s id="ctaVarietyCompareText"></s></span>
+      <span class="cta__badge" id="ctaVarietyBadge" hidden></span>
+    </div>
+    <button class="btn btn--primary btn--xl" data-reveal id="ctaVariety">Get the Wild Variety Pack</button>
   </section>
 
   <!-- ══ EMAIL OPT-IN ══ -->
@@ -216,10 +258,21 @@
           <span style="background:#FF3ECD"></span>
           <span style="background:#FF8327"></span>
         </div>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/drinkhydrowild/" target="_blank" rel="noopener" aria-label="Follow HydroWild on Instagram" class="footer__social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+            </svg>
+            @drinkhydrowild
+          </a>
+        </div>
       </div>
       <div class="footer__cols">
         <div><h4>Shop</h4><a href="/product.html?flavor=blue-raspberry">Blue Raspberry</a><a href="/product.html?flavor=watermelon">Watermelon</a><a href="/product.html?flavor=strawberry-lemonade">Strawberry Lemonade</a><a href="/product.html?flavor=fruit-punch">Fruit Punch</a></div>
-        <div><h4>Company</h4><a href="/story.html">Our Story</a><a href="/ingredients.html">Clean Ingredients</a><a href="/shop.html">Shop All</a><a href="/contact.html">Contact</a></div>
+        <div><h4>Company</h4><a href="/story.html">Our Story</a><a href="/ingredients.html">Clean Ingredients</a><a href="/shop.html">Shop All</a><a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact</a></div>
       </div>
     </div>
     <div class="footer__bottom">
