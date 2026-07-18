@@ -6,8 +6,62 @@
   <!-- Title and description are set dynamically by post.js based on the post's data -->
   <title>The Wild Blog — HydroWild</title>
   <meta name="description" content="Read the latest from the HydroWild team." />
-  <link rel="icon" type="image/svg+xml" href="/assets/logos/pink_triangle_logo.svg" />
   <link rel="stylesheet" href="/src/styles/main.css" />
+  <!-- ══ Icons & PWA ══ -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#09005E" />
+  <meta name="msapplication-TileColor" content="#09005E" />
+  <meta name="msapplication-TileImage" content="/favicon-192.png" />
+  <!-- ══ Open Graph ══ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="HydroWild" />
+  <meta property="og:url" content="https://hydrowild.com/post.html" />
+  <meta property="og:title" content="Blog Post — HydroWild" />
+  <meta property="og:image" content="https://hydrowild.com/favicon-512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <!-- ══ Twitter / X ══ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@drinkhydrowild" />
+  <meta name="twitter:title" content="HydroWild Blog" />
+  <meta name="twitter:image" content="https://hydrowild.com/favicon-512.png" />
+  <!-- ══ Authorship & SEO ══ -->
+  <meta name="author" content="Ryder Schilling" />
+  <meta name="creator" content="Ryder Schilling" />
+  <meta name="generator" content="AI Syndicate" />
+  <meta name="robots" content="index, follow" />
+  <meta name="revisit-after" content="7 days" />
+  <!-- ══ JSON-LD Structured Data ══ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "HydroWild",
+    "url": "https://hydrowild.com",
+    "description": "Zero-sugar, zero-dye, science-backed hydration for kids and teens. Electrolytes + 9 essential vitamins.",
+    "author": {
+      "@type": "Person",
+      "name": "Ryder Schilling"
+    },
+    "creator": {
+      "@type": "Organization",
+      "name": "AI Syndicate"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "HydroWild",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://hydrowild.com/favicon-512.png"
+      }
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -74,7 +128,7 @@
       </div>
     </div>
     <div class="footer__bottom">
-      <p class="footer__note">© 2026 HydroWild. Concept build by Ryder Schilling.</p>
+      <p class="footer__note">© 2026 HydroWild · Built by Ryder Schilling · Powered by AI Syndicate</p>
       <p class="footer__note">Get Wild. Stay Hydrated.</p>
     </div>
   </footer>

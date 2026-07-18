@@ -1,0 +1,23 @@
+{
+  "name": "HydroWild",
+  "short_name": "HydroWild",
+  "description": "Zero-sugar, zero-dye, science-backed hydration for kids and teens. Built by Ryder Schilling. Powered by AI Syndicate.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09005E",
+  "theme_color": "#09005E",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
