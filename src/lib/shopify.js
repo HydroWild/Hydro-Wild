@@ -1,24 +1,25 @@
 // ─────────────────────────────────────────────────────────────
 // HydroWild Headless Shopify — Storefront API client
 //
-// TO ACTIVATE:
-//  1. Shopify Admin → Settings → Apps → Develop apps → Create app
-//  2. Under "API credentials" → Configure Storefront API scopes:
+// SETUP (one-time, done by HydroWild's Shopify admin):
+//  1. Shopify Admin → Settings → Apps and sales channels → Develop apps
+//  2. Create app → Configure Storefront API scopes, enable:
 //       ✓ unauthenticated_read_product_listings
 //       ✓ unauthenticated_read_product_inventory
 //       ✓ unauthenticated_write_checkouts
-//       ✓ unauthenticated_write_customers
-//  3. Install the app → copy the "Storefront API access token"
-//  4. Paste it in CONFIG.storefrontToken below
-//  5. Set USE_MOCK = false
+//  3. Install app → copy "Storefront API access token"
+//  4. Copy .env.example → .env.local and fill in both values
+//
+// Auto-detects mock mode — no token = demo mode, token present = live.
 // ─────────────────────────────────────────────────────────────
 
-export const USE_MOCK = true; // ← flip to false once token is added
+export const USE_MOCK = !import.meta.env.VITE_SHOPIFY_TOKEN;
 
 const CONFIG = {
-  domain:          'hydrowild.com',
-  storefrontToken: '',            // ← paste your Storefront API access token here
-  apiVersion:      '2024-10',
+  // Must be the .myshopify.com domain (not the custom domain) for CORS + API routing.
+  domain:          import.meta.env.VITE_SHOPIFY_DOMAIN   || 'your-store.myshopify.com',
+  storefrontToken: import.meta.env.VITE_SHOPIFY_TOKEN    || '',
+  apiVersion:      '2025-04',
 };
 
 const ENDPOINT = `https://${CONFIG.domain}/api/${CONFIG.apiVersion}/graphql.json`;
@@ -114,6 +115,41 @@ async function createShopifyCart(lines) {
   return cart;
 }
 
+// ── Price hydration ──────────────────────────────────────────
+
+/**
+ * Batch-fetch real prices + variant IDs for a list of product handles.
+ * Returns a Map: handle → { price: number, variantId: string, available: boolean }
+ * Also warms the variant cache so checkout is instant.
+ *
+ * Call this on page load so displayed prices always match Shopify — even
+ * after the client updates pricing in their admin.
+ */
+export async function hydrateProducts(handles) {
+  if (USE_MOCK || !handles.length) return new Map();
+
+  // Single batched GraphQL query — one round-trip for all products
+  const fields = `variants(first: 1) { nodes { id availableForSale price { amount } } }`;
+  const aliases = handles.map((h, i) => `p${i}: product(handle: "${h}") { ${fields} }`).join('\n');
+
+  let data;
+  try {
+    data = await gql(`query HydrateProducts { ${aliases} }`);
+  } catch {
+    return new Map(); // Non-fatal — fall back to static prices
+  }
+
+  const result = new Map();
+  handles.forEach((handle, i) => {
+    const variant = data[`p${i}`]?.variants?.nodes?.[0];
+    if (!variant) return;
+    const price = parseFloat(variant.price.amount);
+    result.set(handle, { price, variantId: variant.id, available: variant.availableForSale });
+    _variantCache.set(handle, variant.id); // warm cache for instant checkout
+  });
+  return result;
+}
+
 // ── Checkout entry point ─────────────────────────────────────
 /**
  * cartItems: the full local cart items array from cart.js
@@ -128,21 +164,35 @@ async function createShopifyCart(lines) {
  *  Deep-link to the product page(s) on hydrowild.com so the
  *  demo still feels functional without an API token.
  */
-export async function checkout(cartItems = []) {
+/**
+ * cartItems: local cart items from cart.js — { id, handle, name, img, price, qty }
+ * clearCart:  optional callback to wipe local cart just before redirect
+ *
+ * Real flow:
+ *  1. Resolve Shopify variant IDs in parallel (uses prefetch cache where warm)
+ *  2. Create a Shopify cart with CartCreate mutation
+ *  3. Clear local cart — Shopify owns it from this point
+ *  4. Redirect to Shopify's hosted checkout URL
+ *
+ * Mock flow:
+ *  Deep-link to the product page on hydrowild.com so the demo feels
+ *  functional without needing an API token.
+ */
+export async function checkout(cartItems = [], clearCart) {
   if (!cartItems.length) return;
 
   if (USE_MOCK) {
     const handles = [...new Set(cartItems.map((i) => i.handle).filter(Boolean))];
     const url = handles.length === 1
-      ? `https://${CONFIG.domain}/products/${handles[0]}`
-      : `https://${CONFIG.domain}/collections/all`;
+      ? `https://hydrowild.com/products/${handles[0]}`
+      : `https://hydrowild.com/collections/all`;
     window.open(url, '_blank');
     return;
   }
 
   // ── Real headless flow ──────────────────────────────────────
 
-  // 1. Resolve variant IDs — use cache where available, fetch the rest in parallel
+  // 1. Resolve variant IDs — cache hit = no extra fetch
   const uniqueHandles = [...new Set(cartItems.map((i) => i.handle))];
   const variantMap = Object.fromEntries(
     await Promise.all(
@@ -155,13 +205,18 @@ export async function checkout(cartItems = []) {
     )
   );
 
-  // 2. Build cart line items
+  // 2. Build cart lines
   const lines = cartItems.map((item) => ({
     merchandiseId: variantMap[item.handle],
     quantity:      item.qty,
   }));
 
-  // 3. Create Shopify cart + redirect to checkout
+  // 3. Create Shopify cart
   const shopifyCart = await createShopifyCart(lines);
+
+  // 4. Wipe local cart — Shopify owns it now
+  clearCart?.();
+
+  // 5. Redirect to Shopify checkout
   window.location.href = shopifyCart.checkoutUrl;
 }

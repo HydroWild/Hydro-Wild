@@ -60,13 +60,13 @@ export function initCartUI() {
     if (checkoutLabel) checkoutLabel.textContent = USE_MOCK ? 'Opening…' : 'Sending to checkout…';
 
     try {
-      await checkout(cart.items);
-      // Only clear cart + reset button if we stayed on the page (mock opens new tab)
+      await checkout(cart.items, () => cart.clear());
+      // Mock opens a new tab so we stay on the page — reset button
       if (USE_MOCK) {
         checkoutBtn.disabled = false;
         if (checkoutLabel) checkoutLabel.textContent = 'Checkout';
       }
-      // Real mode redirects away so no reset needed
+      // Real mode redirects away — no reset needed (cart already cleared inside checkout)
     } catch (err) {
       toast(`Checkout error: ${err.message}`);
       console.error(err);

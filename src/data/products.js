@@ -67,7 +67,7 @@ export const BUNDLES = [
     name: 'Wild Variety Pack',
     desc: 'All 4 flavors. All 4 creatures. One box.',
     img: '/assets/img/starter-kit.png',
-    price: 14.99,
+    price: 49.99,
   },
 ];
 

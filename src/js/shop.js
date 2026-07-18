@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FLAVORS, BUNDLES } from '../data/products.js';
 import { cart } from '../lib/cart.js';
 import { initNav, initCartUI } from './ui.js';
+import { hydrateProducts } from '../lib/shopify.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,7 +23,7 @@ grid.innerHTML = FLAVORS.map((f) => `
       <img class="shop-card__pack" src="${f.packImg}" alt="HydroWild ${f.name}" loading="lazy" />
       <h2 class="shop-card__name" style="color:${f.color}">${f.name}</h2>
       <p class="shop-card__tagline">${f.tagline}</p>
-      <p class="shop-card__price">$${f.price.toFixed(2)}</p>
+      <p class="shop-card__price" data-price-id="${f.id}">$${f.price.toFixed(2)}</p>
       <div class="shop-card__actions">
         <button class="btn btn--primary" data-add="${f.id}">Add to Cart</button>
         <a class="btn btn--ghost" href="/product.html?flavor=${f.id}">View Flavor</a>
@@ -30,6 +31,27 @@ grid.innerHTML = FLAVORS.map((f) => `
     </div>
   </div>
 `).join('');
+
+// ── Hydrate prices from Shopify (no-op in mock mode) ──
+const allHandles = [
+  ...FLAVORS.map((f) => f.handle),
+  BUNDLES[0].handle,
+];
+hydrateProducts(allHandles).then((priceMap) => {
+  FLAVORS.forEach((f) => {
+    const data = priceMap.get(f.handle);
+    if (!data) return;
+    f.price = data.price; // keep in-memory price in sync for cart
+    const el = document.querySelector(`[data-price-id="${f.id}"]`);
+    if (el) el.textContent = `$${data.price.toFixed(2)}`;
+  });
+  const bundleData = priceMap.get(BUNDLES[0].handle);
+  if (bundleData) {
+    BUNDLES[0].price = bundleData.price;
+    const el = document.getElementById('bundlePrice');
+    if (el) el.textContent = `$${bundleData.price.toFixed(2)}`;
+  }
+});
 
 // ── Card click → product page (ignore button/link clicks) ──
 grid.addEventListener('click', (e) => {

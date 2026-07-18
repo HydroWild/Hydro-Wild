@@ -4,6 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FLAVORS, getFlavor } from '../data/products.js';
 import { cart } from '../lib/cart.js';
 import { initCartUI, initNav } from './ui.js';
+import { hydrateProducts } from '../lib/shopify.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +26,14 @@ document.getElementById('title').style.color = flavor.color;
 document.getElementById('tagline').textContent = flavor.tagline;
 document.getElementById('price').textContent = `$${flavor.price.toFixed(2)}`;
 document.getElementById('creatureBg').src = flavor.creatureImg;
+
+// ── Hydrate price from Shopify (no-op in mock mode) ──
+hydrateProducts([flavor.handle]).then((priceMap) => {
+  const data = priceMap.get(flavor.handle);
+  if (!data) return;
+  flavor.price = data.price; // keep in-memory for cart
+  document.getElementById('price').textContent = `$${data.price.toFixed(2)}`;
+});
 
 // ── Gallery ──
 const galleryImgs = [flavor.packImg, flavor.creatureImg, '/assets/img/lifestyle-1.png'];
