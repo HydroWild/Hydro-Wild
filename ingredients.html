@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Clean Ingredients — HydroWild</title>
   <meta name="description" content="What's inside HydroWild: a parent's guide to every ingredient. Zero sugar, zero dyes, 7 essential vitamins, 2 key electrolytes." />
+  <link rel="canonical" href="https://hydrowild.com/ingredients.html" />
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="HydroWild for AI" />
   <link rel="stylesheet" href="/src/styles/main.css" />
   <!-- ══ Icons & PWA ══ -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -21,6 +23,7 @@
   <meta property="og:site_name" content="HydroWild" />
   <meta property="og:url" content="https://hydrowild.com/ingredients.html" />
   <meta property="og:title" content="Clean Ingredients — HydroWild" />
+  <meta property="og:description" content="What's inside HydroWild: a parent's guide to every ingredient. Zero sugar, zero dyes, 7 essential vitamins, 2 key electrolytes." />
   <meta property="og:image" content="https://hydrowild.com/favicon-512.png" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
@@ -33,7 +36,8 @@
   <meta name="author" content="Ryder Schilling" />
   <meta name="creator" content="Ryder Schilling" />
   <meta name="generator" content="AI Syndicate" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="tdm-reservation" content="0" />
   <meta name="revisit-after" content="7 days" />
   <!-- ══ JSON-LD Structured Data ══ -->
   <script type="application/ld+json">
@@ -61,6 +65,34 @@
     }
   }
   </script>
+  <!-- Organization (identity anchor for AI engines) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "HydroWild",
+    "alternateName": "Drink HydroWild",
+    "url": "https://hydrowild.com",
+    "logo": "https://hydrowild.com/favicon-512.png",
+    "description": "HydroWild makes science-backed, zero-sugar, zero-dye hydration drinks for kids and teens — 9 vitamins and electrolytes in four wild flavors, made in the USA.",
+    "email": "support@hydrowild.com",
+    "foundingDate": "2022",
+    "founders": [
+      { "@type": "Person", "name": "CJ Britton" },
+      { "@type": "Person", "name": "Lindey Britton" }
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Birmingham",
+      "addressRegion": "AL",
+      "addressCountry": "US"
+    },
+    "sameAs": [
+      "https://www.instagram.com/drinkhydrowild/",
+      "https://www.linkedin.com/company/hydrowild"
+    ]
+  }
+  </script>
 </head>
 <body>
   <header class="nav is-scrolled" id="nav">
@@ -80,6 +112,8 @@
       <span class="nav__cart-count" id="cartCount">0</span>
     </button>
   </header>
+
+  <main>
 
   <!-- ══ HERO ══ -->
   <section class="ing-hero">
@@ -291,6 +325,7 @@
   </section>
 
   <!-- ══ FOOTER ══ -->
+  </main>
   <footer class="footer">
     <img src="/assets/img/creature-yeti.png" alt="" class="footer__creature" aria-hidden="true" loading="lazy" />
     <div class="footer__top">
@@ -318,5 +353,11 @@
 
   <div id="cartRoot"></div>
   <script type="module" src="/src/js/ingredients.js"></script>
+  <!-- AI Syndicate Chatbot -->
+  <script src="https://www.aisyndicate.com/chatbot/embed.js"
+          data-key="cbk_475857a6ba2597800caad0e55dff84b070ef"
+          data-accent="#1c01a2"
+          data-name="Ask Hydrowild"
+          async></script>
 </body>
 </html>

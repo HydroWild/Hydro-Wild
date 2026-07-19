@@ -6,6 +6,8 @@
   <!-- Title and description are set dynamically by post.js based on the post's data -->
   <title>The Wild Blog — HydroWild</title>
   <meta name="description" content="Read the latest from the HydroWild team." />
+  <link rel="canonical" href="https://hydrowild.com/post.html" />
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="HydroWild for AI" />
   <link rel="stylesheet" href="/src/styles/main.css" />
   <!-- ══ Icons & PWA ══ -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -22,6 +24,7 @@
   <meta property="og:site_name" content="HydroWild" />
   <meta property="og:url" content="https://hydrowild.com/post.html" />
   <meta property="og:title" content="Blog Post — HydroWild" />
+  <meta property="og:description" content="Read the latest from the HydroWild team." />
   <meta property="og:image" content="https://hydrowild.com/favicon-512.png" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
@@ -34,7 +37,8 @@
   <meta name="author" content="Ryder Schilling" />
   <meta name="creator" content="Ryder Schilling" />
   <meta name="generator" content="AI Syndicate" />
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="tdm-reservation" content="0" />
   <meta name="revisit-after" content="7 days" />
   <!-- ══ JSON-LD Structured Data ══ -->
   <script type="application/ld+json">
@@ -60,6 +64,34 @@
         "url": "https://hydrowild.com/favicon-512.png"
       }
     }
+  }
+  </script>
+  <!-- Organization (identity anchor for AI engines) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "HydroWild",
+    "alternateName": "Drink HydroWild",
+    "url": "https://hydrowild.com",
+    "logo": "https://hydrowild.com/favicon-512.png",
+    "description": "HydroWild makes science-backed, zero-sugar, zero-dye hydration drinks for kids and teens — 9 vitamins and electrolytes in four wild flavors, made in the USA.",
+    "email": "support@hydrowild.com",
+    "foundingDate": "2022",
+    "founders": [
+      { "@type": "Person", "name": "CJ Britton" },
+      { "@type": "Person", "name": "Lindey Britton" }
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Birmingham",
+      "addressRegion": "AL",
+      "addressCountry": "US"
+    },
+    "sameAs": [
+      "https://www.instagram.com/drinkhydrowild/",
+      "https://www.linkedin.com/company/hydrowild"
+    ]
   }
   </script>
 </head>
@@ -137,5 +169,11 @@
   <div id="cartRoot"></div>
 
   <script type="module" src="/src/js/post.js"></script>
+  <!-- AI Syndicate Chatbot -->
+  <script src="https://www.aisyndicate.com/chatbot/embed.js"
+          data-key="cbk_475857a6ba2597800caad0e55dff84b070ef"
+          data-accent="#1c01a2"
+          data-name="Ask Hydrowild"
+          async></script>
 </body>
 </html>
