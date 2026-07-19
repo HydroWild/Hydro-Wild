@@ -697,6 +697,7 @@ a { color: inherit; text-decoration: none; }
 .cta__creature--kraken { left: 2%; top: 10%; }
 .cta__creature--nessie { right: 3%; top: 14%; }
 .cta__creature--wampus { right: 9%; bottom: 8%; }
+.cta__creature--yeti { left: 7%; bottom: 6%; }
 .cta__title {
   position: relative;
   font-family: var(--font-display);
@@ -1131,6 +1132,14 @@ a { color: inherit; text-decoration: none; }
   justify-content: center;
   align-items: center;
   padding: 0.5rem 0;
+}
+
+/* Family image — replaces the 4-pack cluster (CJ request 2026-07-19) */
+.bundle__kit-img {
+  width: min(100%, 460px);
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .bundle__kit-cluster {
@@ -2147,7 +2156,7 @@ a { color: inherit; text-decoration: none; }
   pointer-events: none;
 }
 .pdp__main-img { position: relative; width: 70%; filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.55)); z-index: 2; }
-.pdp__thumbs { display: flex; gap: 0.8rem; margin-top: 1rem; }
+.pdp__thumbs { display: flex; gap: 0.8rem; margin-top: 1rem; flex-wrap: wrap; justify-content: center; }
 .pdp__thumbs button {
   width: 76px;
   height: 76px;
@@ -2185,6 +2194,14 @@ a { color: inherit; text-decoration: none; }
 .pdp__tagline { font-size: 1.15rem; color: rgba(255, 255, 255, 0.8); margin-bottom: 1.5rem; }
 .pdp__price { font-family: var(--font-display); font-weight: 900; font-size: 2rem; margin-bottom: 1.8rem; }
 .pdp__price small { font-size: 1rem; font-weight: 400; font-family: var(--font-body); color: rgba(255,255,255,0.6); }
+.pdp__badges-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  color: var(--lime);
+  margin-bottom: 0.7rem;
+}
 .pdp__badges { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
 .pdp__badges span {
   font-size: 0.8rem;
@@ -2230,6 +2247,109 @@ a { color: inherit; text-decoration: none; }
 .pdp__acc-body { max-height: 0; overflow: hidden; transition: max-height 0.45s ease; }
 .pdp__acc-body-inner { padding: 0 0 1.4rem; color: rgba(255, 255, 255, 0.78); line-height: 1.65; }
 .pdp__acc-body img { border-radius: 14px; margin-top: 0.8rem; }
+
+/* ══ PDP lower sections — replicated from live hydrowild.com (2026-07-19) ══ */
+
+/* The Wild Difference — accordion + action photo */
+.pdp-diff { padding: 5.5rem 2.5rem; background: var(--navy-deep); }
+.pdp-diff__inner {
+  max-width: 1150px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.pdp-diff__copy .section-title { margin-bottom: 2rem; }
+.pdp-diff__acc .pdp__acc-head { text-align: left; gap: 1rem; }
+.pdp-diff__visual img {
+  width: 100%;
+  border-radius: 24px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+@media (max-width: 900px) {
+  .pdp-diff { padding: 3.5rem 1.5rem; }
+  .pdp-diff__inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  .pdp-diff__copy { text-align: center; }
+  .pdp-diff__visual { order: -1; }
+}
+
+/* Testimonial band — pour photo + big quote on flavor-dark bg (set via JS) */
+.pdp-quote { padding: 5rem 2.5rem; }
+.pdp-quote__inner {
+  max-width: 1150px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.pdp-quote__visual img {
+  width: 100%;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+.pdp-quote__name {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 1.4rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.35);
+  display: inline-block;
+}
+.pdp-quote__text {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+  line-height: 1.25;
+  color: #fff;
+}
+@media (max-width: 900px) {
+  .pdp-quote { padding: 3.5rem 1.5rem; }
+  .pdp-quote__inner { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+  .pdp-quote__name { display: block; border-bottom: none; padding-bottom: 0; }
+}
+
+/* Why parents love HydroWild — customer review cards */
+.pdp-why { padding: 5.5rem 2.5rem; background: var(--navy); }
+.pdp-why__inner { max-width: 1100px; margin: 0 auto; text-align: center; }
+.pdp-why__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.4rem;
+  margin-top: 3rem;
+  text-align: left;
+}
+.pdp-why__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.8rem 1.6rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+.pdp-why__card:hover { transform: translateY(-4px); border-color: var(--why-color, var(--lime)); }
+.pdp-why__stars { color: var(--why-color, var(--lime)); letter-spacing: 0.2em; margin-bottom: 1rem; font-size: 0.95rem; }
+.pdp-why__quote { color: rgba(255, 255, 255, 0.85); line-height: 1.65; font-size: 0.98rem; flex: 1; margin-bottom: 1.2rem; }
+.pdp-why__name { font-weight: 700; margin-bottom: 0.15rem; }
+.pdp-why__verified { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--why-color, var(--lime)); }
+
+/* Common questions from parents — FAQ accordion */
+.pdp-faq { padding: 5.5rem 2.5rem; background: var(--navy-deep); }
+.pdp-faq__inner { max-width: 850px; margin: 0 auto; text-align: center; }
+.pdp-faq__acc { margin-top: 2.5rem; text-align: left; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+.pdp-faq__acc .pdp__acc-head { text-align: left; gap: 1rem; }
+@media (max-width: 900px) {
+  .pdp-why, .pdp-faq { padding: 3.5rem 1.5rem; }
+}
 
 .pdp-more { padding: 5rem 2.5rem 6rem; background: var(--navy-deep); }
 .pdp-more__inner { max-width: 1200px; margin: 0 auto; }
@@ -3349,6 +3469,17 @@ body.menu-is-open { overflow: hidden; }
   html, body {
     overflow-x: clip;
     max-width: 100vw;
+  }
+
+  /* ── Hero Kraken visible on mobile (CJ request 2026-07-19) ──
+     Desktop sizes him at min(70vw, 900px) anchored at bottom:-20% —
+     at phone widths that leaves almost the whole image below the
+     hero's floor. Scale him up relative to the viewport and raise
+     his anchor so he surfaces behind the copy like on desktop. */
+  .hero__creature {
+    width: 150vw;
+    bottom: -14%;
+    opacity: 0.3;
   }
 
   /* iOS Safari auto-zooms any focused input under 16px — kill that */

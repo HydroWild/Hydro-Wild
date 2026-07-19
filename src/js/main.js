@@ -25,29 +25,6 @@ const cartUI = initCartUI();
 gsap.set('.hero__inner', { opacity: 0, y: 24 });
 gsap.to('.hero__inner', { opacity: 1, y: 0, duration: 1.1, ease: 'power3.out', delay: 0.15, clearProps: 'transform,opacity' });
 
-gsap.set('.hero__pack', { opacity: 0, y: 40, scale: 0.85 });
-gsap.to('.hero__pack', {
-  opacity: 1, y: 0, scale: 1,
-  stagger: 0.1, duration: 1.0, ease: 'power3.out', delay: 0.5,
-  clearProps: 'transform,opacity',
-});
-
-// Floating packs — infinite drift + scroll parallax
-document.querySelectorAll('.hero__pack').forEach((pack, i) => {
-  gsap.to(pack, {
-    y: `+=${18 + i * 6}`,
-    rotation: `+=${i % 2 ? 5 : -5}`,
-    duration: 2.6 + i * 0.4,
-    yoyo: true,
-    repeat: -1,
-    ease: 'sine.inOut',
-  });
-  gsap.to(pack, {
-    yPercent: -60 - i * 25,
-    scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 },
-  });
-});
-
 // ── Bubbles ──
 const bubbleWrap = document.getElementById('bubbles');
 if (bubbleWrap) {
@@ -123,7 +100,7 @@ worlds.innerHTML = FLAVORS.map(
           <img class="world__pack" src="${f.packImg}" alt="HydroWild ${f.name}" loading="lazy" />
         </div>
         <div class="world__copy" style="direction:ltr">
-          <span class="world__creature-tag" style="color:${f.color}">Guarded by ${f.creature}</span>
+          <span class="world__creature-tag" style="color:${f.color}">${f.presents}</span>
           <h2 class="world__name" style="color:${f.color}">${f.name}</h2>
           <p class="world__tagline">${f.tagline}</p>
           <p class="world__lore">${f.lore}</p>
@@ -183,19 +160,6 @@ FLAVORS.forEach((f, i) => {
   // scroll distance to hold on, it never freezes. It arrives and keeps
   // gliding straight into the next world.
 });
-
-// ── Starter Kit section entrance ──
-if (document.querySelector('.starter')) {
-  gsap.set('.starter__photo', { opacity: 0 });
-  gsap.set('.starter__copy > *', { opacity: 0, y: 28 });
-  ScrollTrigger.create({
-    trigger: '.starter', start: 'top 78%', once: true,
-    onEnter: () => {
-      gsap.to('.starter__photo', { opacity: 1, duration: 1.1, ease: 'power2.out', clearProps: 'opacity' });
-      gsap.to('.starter__copy > *', { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out', clearProps: 'transform,opacity', delay: 0.2 });
-    },
-  });
-}
 
 // ── Bundle section entrance — single clean block, no child conflicts ──
 if (document.querySelector('.bundle__visual')) {

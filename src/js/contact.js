@@ -59,7 +59,7 @@ form?.addEventListener('submit', (e) => {
   const message = document.getElementById('cf-message').value.trim();
 
   const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
-  const mailto = `mailto:hello@hydrowild.com`
+  const mailto = `mailto:support@hydrowild.com`
     + `?subject=${encodeURIComponent(subject)}`
     + `&body=${encodeURIComponent(body)}`;
 

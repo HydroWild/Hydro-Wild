@@ -19,7 +19,7 @@ grid.innerHTML = FLAVORS.map((f) => `
       <img src="${f.creatureImg}" alt="" loading="lazy" />
     </div>
     <div class="shop-card__body">
-      <span class="shop-card__creature-tag" style="color:${f.color}">Guarded by ${f.creature}</span>
+      <span class="shop-card__creature-tag" style="color:${f.color}">${f.presents}</span>
       <img class="shop-card__pack" src="${f.packImg}" alt="HydroWild ${f.name}" loading="lazy" />
       <h2 class="shop-card__name" style="color:${f.color}">${f.name}</h2>
       <p class="shop-card__tagline">${f.tagline}</p>
@@ -64,7 +64,8 @@ hydrateProducts(allHandles).then((priceMap) => {
 });
 
 // ── Card click → product page (ignore button/link clicks) ──
-grid.addEventListener('click', (e) => {
+// Delegated on document so it covers the flavor grid AND the bundle sidebar card.
+document.addEventListener('click', (e) => {
   const card = e.target.closest('[data-href]');
   if (!card) return;
   if (e.target.closest('button, a')) return; // let buttons handle themselves
