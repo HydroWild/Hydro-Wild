@@ -408,6 +408,27 @@ gsap.from('.story__img', {
   scrollTrigger: { trigger: '.story', start: 'top 78%', once: true },
 });
 
+// ── FAQ — all open by default, togglable (mirrors ingredients.js) ──
+document.querySelectorAll('#homeFaqAcc .ing-acc__item').forEach((item) => {
+  const head = item.querySelector('.ing-acc__head');
+  const body = item.querySelector('.ing-acc__body');
+  const icon = item.querySelector('.ing-acc__icon');
+
+  body.style.overflow = 'hidden';
+  body.style.transition = 'max-height 0.4s cubic-bezier(0.4,0,0.2,1)';
+
+  item.classList.add('open');
+  requestAnimationFrame(() => { body.style.maxHeight = body.scrollHeight + 'px'; });
+  if (icon) icon.textContent = '−';
+
+  head.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    item.classList.toggle('open', !isOpen);
+    body.style.maxHeight = isOpen ? '0px' : body.scrollHeight + 'px';
+    if (icon) icon.textContent = isOpen ? '+' : '−';
+  });
+});
+
 // ── Footer stagger ──
 gsap.from('.footer__brand, .footer__cols > div', {
   opacity: 0, y: 28, stagger: 0.1, duration: 0.7, ease: 'power3.out',

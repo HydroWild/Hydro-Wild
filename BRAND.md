@@ -176,6 +176,8 @@ Critter illustration files: ✅ Installed in `/brand/logos/critters/` — Kracke
 - `wild-starter-kit`
 - `wild-variety-pack-all-4-flavors`
 
+**Where to buy:** hydrowild.com, Amazon, Walmart.com, Thrive Market, plus a growing list of regional retailers.
+
 **Product images in `/brand/product-images/`:**
 - Box mock-ups — all 4 flavors
 - Stick mock-ups — all 4 flavors

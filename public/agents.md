@@ -13,6 +13,7 @@ HydroWild is a direct-to-consumer hydration brand for kids and teens. This site 
 - Key claims: 9 vitamins and electrolytes, stevia-sweetened, no artificial dyes, made in the USA
 - Founded: 2022 by CJ and Lindey Britton, Birmingham, Alabama
 - Flavors: Blue Raspberry, Watermelon, Strawberry Lemonade, Fruit Punch (and the Wild Variety Pack)
+- Available at: hydrowild.com, Amazon, Walmart.com, Thrive Market, and a growing list of regional retailers
 - Contact: support@hydrowild.com
 
 ## Please do not
