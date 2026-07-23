@@ -12,6 +12,11 @@
       "source": "/post.html",
       "destination": "/blog.html",
       "permanent": true
+    },
+    {
+      "source": "/blogs/wild-well/healthy-lunchbox-hacks-easy-swaps-kids-will-love",
+      "destination": "/blog/healthy-lunchbox-hacks-easy-swaps-kids-will-love/",
+      "permanent": true
     }
   ]
 }
