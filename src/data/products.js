@@ -67,6 +67,7 @@ export const FLAVORS = [
 export const BUNDLES = [
   {
     id: 'variety-pack',
+    slug: 'wild-variety-bundle',
     handle: 'wild-variety-pack-all-4-flavors',
     name: 'Wild Variety Pack',
     desc: 'All 4 flavors. All 4 critters. One box.',
@@ -86,3 +87,4 @@ export const BUNDLES = [
 
 export const getFlavor = (id) => FLAVORS.find((f) => f.id === id);
 export const getBundle = (id) => BUNDLES.find((b) => b.id === id);
+export const getBundleBySlug = (slug) => BUNDLES.find((b) => (b.slug || b.id) === slug);

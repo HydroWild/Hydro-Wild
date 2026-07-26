@@ -4,6 +4,8 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FLAVORS } from '../../data/products.js';
+import { getProductFAQs } from '../../data/faqs.js';
+import { REVIEWS } from '../../data/reviews.js';
 import { cart } from '../../lib/cart.js';
 import { hydrateProducts } from '../../lib/shopify.js';
 
@@ -85,21 +87,6 @@ const WILD_DIFF = [
   {
     t: 'Zero Sugar, Naturally Sweet',
     b: 'Sweetened the smart way, with zero grams of sugar and no artificial sweeteners. Hydration kids ask for, without the sugar crash.',
-  },
-];
-
-const REVIEWS = [
-  {
-    q: 'My little loves the taste and begs to have one every day. When friends come over they want them too.',
-    n: 'Chase M.',
-  },
-  {
-    q: 'My daughter LOVES these! Such an easy, delicious way to keep your kiddos hydrated — and perfect for our Disney bag!',
-    n: 'Leslie G.',
-  },
-  {
-    q: "A must-have for busy sports fams! My kids love this — it's their go-to for sports. Love having these packets on the go!",
-    n: '@ThePerfectHouseWife',
   },
 ];
 
@@ -220,18 +207,7 @@ export function renderPDP(product, { bundle, flavor, cartUI }) {
   }
 
   // ── Common questions from parents (copy mirrors hydrowild.com PDP) ──
-  const colorSource = product.id === 'blue-raspberry' ? 'spirulina extract (color)' : 'fruit & vegetable juice powder (color)';
-  const flavorLine = bundle ? "each flavor's natural fruit flavor" : `natural ${product.name.toLowerCase()} flavor`;
-  const FAQS = [
-    ['Does it contain any common allergens?', "HydroWild is free from the most common allergens — no gluten, no dairy, no nuts, no soy. It's also vegan-friendly. As always, if your child has specific sensitivities, we recommend reviewing the full ingredient list."],
-    ['What ages can drink HydroWild?', "HydroWild is formulated for children ages 4 and up, through teens. It's designed to meet the nutritional needs of active, growing kids — not toddlers, not adults. If your child is under 4 or has specific health conditions, check with your pediatrician first."],
-    ["If there's no sugar, then how does it taste so sweet?", "Great question — and one we get a lot! HydroWild is sweetened with stevia (Reb A), a plant-based sweetener that gives it that naturally sweet taste without any sugar or artificial sweeteners. It's the same clean-label sweetener used in premium adult wellness products, just formulated to taste great for kids."],
-    ['Is it better than sports drinks?', "Most sports drinks are loaded with sugar, artificial dyes, and ingredients designed for adult athletes. HydroWild was specifically formulated for kids' smaller bodies and developing systems — zero sugar, no artificial anything, and vitamins that actually support growth and immunity, not just electrolyte replacement."],
-    ['How often should my child drink HydroWild?', "It's designed for daily use. The vitamins are dosed at levels appropriate for kids, not megadoses. Think of it like a daily hydration habit with built-in nutritional support."],
-    ['Where are your products manufactured?', "HydroWild is proudly made in the USA. Our products are also third-party tested, so you can trust what's on the label is exactly what's inside."],
-    ['Where does the color come from?', "No artificial dyes here. The colors in our flavors come from fruit and vegetable juice powder. It's the same ingredient used in many clean-label kids' products and completely safe for everyday use."],
-    ["What's actually in it? (The real ingredient list)", `Each stick contains: citric acid, ${flavorLine}, ${colorSource}, and stevia extract (Reb A). Plus 7 vitamins (A, C, D, K, B6, B9/folate, B12) and 2 electrolytes — magnesium and potassium. That's it. Nothing you can't pronounce.`],
-  ];
+  const FAQS = getProductFAQs({ id: product.id, name: product.name, bundle: !!bundle });
 
   const pdpFaqAcc = document.getElementById('pdpFaqAcc');
   if (pdpFaqAcc) {
@@ -266,6 +242,7 @@ export function renderPDP(product, { bundle, flavor, cartUI }) {
         <img class="pack" src="${f.packImg}" alt="HydroWild ${f.name}" loading="lazy" />
         <h3 style="color:${f.color}">${f.name}</h3>
         <p>${f.tagline}</p>
+        <p class="flavor-card__price">$${f.price.toFixed(2)}</p>
         <span class="btn btn--ghost" style="font-size:0.85rem;padding:0.6rem 1.4rem;">View</span>
       </a>`
       )

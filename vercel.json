@@ -47,6 +47,12 @@
       "has": [{ "type": "query", "key": "flavor", "value": "starter-kit" }],
       "destination": "/products/starter-kit/",
       "permanent": true
+    },
+    {
+      "source": "/product.html",
+      "has": [{ "type": "query", "key": "flavor", "value": "variety-pack" }],
+      "destination": "/products/wild-variety-bundle/",
+      "permanent": true
     }
   ]
 }

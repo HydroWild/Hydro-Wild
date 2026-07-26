@@ -20,6 +20,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FLAVORS, getBundle } from '../src/data/products.js';
+import { getProductFAQs } from '../src/data/faqs.js';
+import { REVIEWS } from '../src/data/reviews.js';
 import { ORGANIZATION_LD } from './lib/organization-ld.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -35,6 +37,21 @@ const STARTER_KIT_INSIDE_COPY =
   "A taste of every flavor in one box — so your family can find their favorite critter before going all-in. Zero sugar, zero artificial dyes, zero junk.";
 
 const starterKit = getBundle('starter-kit');
+const varietyPack = getBundle('variety-pack');
+
+// Mirrors BUNDLE_OVERRIDES['variety-pack'] in src/js/lib/pdp.js.
+const VARIETY_INSIDE_COPY =
+  '4 boxes × 8 stick packs = 32 total hydration sticks — one box of each flavor, so every kid in the house gets their favorite critter. Zero sugar, zero artificial dyes, zero junk.';
+
+// "Meet Our Critters" cards — variety bundle page only.
+const VARIETY_CRITTERS = [
+  { flavorId: 'blue-raspberry', name: 'Blue Raspberry', creature: 'Yeti (Yukon)', blurb: 'Bold blue raspberry, color from spirulina.' },
+  { flavorId: 'watermelon', name: 'Watermelon', creature: 'Wampus Cat (Zara)', blurb: 'Sweet summer watermelon.' },
+  { flavorId: 'strawberry-lemonade', name: 'Strawberry Lemonade', creature: 'Nessie & Chessie', blurb: 'Front-porch strawberry lemonade.' },
+  { flavorId: 'fruit-punch', name: 'Fruit Punch', creature: 'Mr. Kraken (Lil’ Kraken)', blurb: "Fruit punch kids can't put down." },
+];
+
+const KEY_NUTRIENTS = ['Vitamin A', 'Vitamin C', 'Vitamin B6', 'Vitamin B9', 'Vitamin B12', 'Vitamin D', 'Vitamin K', 'Magnesium', 'Potassium'];
 
 const PRODUCTS = [
   ...FLAVORS.map((f) => ({
@@ -67,6 +84,42 @@ const PRODUCTS = [
     priceUnit: '/ starter kit',
     images: [starterKit.img],
   },
+  {
+    slug: varietyPack.slug || varietyPack.id,
+    pageName: 'Wild Variety Bundle - All 4 Flavors',
+    ldName: 'HydroWild Variety Pack — All 4 Flavors',
+    tagline: 'All 4 flavors. All 4 critters. One box of each.',
+    insideCopy: VARIETY_INSIDE_COPY,
+    price: varietyPack.price,
+    handle: varietyPack.handle,
+    creatureTag: 'The whole wild crew',
+    creatureImg: '/assets/img/creature-kraken.png',
+    mainImg: '/assets/img/wild-family.png',
+    mainImgAlt: 'HydroWild Wild Variety Bundle — all 4 flavors',
+    priceUnit: '/ 4 boxes · 32 stick packs',
+    images: [
+      '/assets/img/wild-family.png',
+      '/assets/img/facts-bundle.png',
+      '/assets/img/comparison-chart.png',
+      '/assets/img/nutrient-focused.png',
+      '/assets/img/suggested-use.png',
+    ],
+    // Overrides for this page only — see task spec, not the generic per-flavor formula below.
+    metaTitle: 'HydroWild Variety Pack — Zero Sugar Kids Hydration, Try All 4 Flavors',
+    metaDescription: 'The full HydroWild lineup, one price, free shipping. Zero sugar, zero sodium, 9 vitamins and electrolytes for active kids ages 4+',
+    themeColor: '#4ADB14',
+    richSnippets: true, // bake FAQPage + aggregateRating/review JSON-LD
+    bundleExtras: {
+      trustRow: ['Free Shipping', 'Made in the USA', 'Third-Party Tested', 'Zero Sugar'],
+      whatsInside: [
+        { stat: '4', label: 'boxes — one of each flavor' },
+        { stat: '32', label: 'total stick packs' },
+        { stat: '~$1.56', label: 'per stick' },
+      ],
+      critters: VARIETY_CRITTERS,
+      keyNutrients: KEY_NUTRIENTS,
+    },
+  },
 ];
 
 function escapeAttr(str) {
@@ -86,9 +139,10 @@ function escapeText(str) {
 
 function renderProduct(p) {
   const url = `${SITE}/products/${p.slug}/`;
-  const pageTitle = `HydroWild ${p.pageName} — Kids Daily Hydration`;
-  const ogTitle = `HydroWild ${p.pageName}`;
-  const description = `${p.tagline} ${p.insideCopy}`;
+  const pageTitle = p.metaTitle || `HydroWild ${p.pageName} — Kids Daily Hydration`;
+  const ogTitle = p.metaTitle || `HydroWild ${p.pageName}`;
+  const description = p.metaDescription || `${p.tagline} ${p.insideCopy}`;
+  const themeColor = p.themeColor || '#09005E';
 
   const productLd = {
     '@context': 'https://schema.org',
@@ -106,8 +160,43 @@ function renderProduct(p) {
       price: p.price.toFixed(2),
       availability: 'https://schema.org/InStock',
       seller: { '@type': 'Organization', name: 'HydroWild' },
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: { '@type': 'MonetaryAmount', value: '0.00', currency: 'USD' },
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+      },
     },
   };
+
+  // Rich snippets (aggregateRating/review + FAQPage) — only baked for pages
+  // that opt in via richSnippets:true, and built from the same shared
+  // src/data/reviews.js + src/data/faqs.js the visible sections render from,
+  // so the JSON-LD can never drift from what's on the page.
+  let faqLd = null;
+  if (p.richSnippets) {
+    productLd.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: '5',
+      reviewCount: String(REVIEWS.length),
+    };
+    productLd.review = REVIEWS.map((r) => ({
+      '@type': 'Review',
+      reviewRating: { '@type': 'Rating', ratingValue: '5', bestRating: '5' },
+      author: { '@type': 'Person', name: r.n },
+      reviewBody: r.q,
+    }));
+
+    const faqs = getProductFAQs({ id: p.slug, name: p.pageName, bundle: true });
+    faqLd = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(([q, a]) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: a },
+      })),
+    };
+  }
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -129,7 +218,7 @@ function renderProduct(p) {
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#09005E" />
+  <meta name="theme-color" content="${themeColor}" />
   <!-- ══ Open Graph ══ -->
   <meta property="og:type" content="product" />
   <meta property="og:site_name" content="HydroWild" />
@@ -137,6 +226,8 @@ function renderProduct(p) {
   <meta property="og:title" content="${escapeAttr(ogTitle)}" />
   <meta property="og:description" content="${escapeAttr(description)}" />
   <meta property="og:image" content="${SITE}${p.mainImg}" />
+  <meta property="product:price:amount" content="${p.price.toFixed(2)}" />
+  <meta property="product:price:currency" content="USD" />
   <!-- ══ Twitter / X ══ -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@drinkhydrowild" />
@@ -151,7 +242,11 @@ ${JSON.stringify(productLd, null, 2)}
   <!-- ══ Organization JSON-LD ══ -->
   <script type="application/ld+json">
 ${JSON.stringify(ORGANIZATION_LD, null, 2)}
-  </script>
+  </script>${faqLd ? `
+  <!-- ══ FAQPage JSON-LD (mirrors the visible #pdpFaqAcc accordion) ══ -->
+  <script type="application/ld+json">
+${JSON.stringify(faqLd, null, 2)}
+  </script>` : ''}
 </head>
 <body data-product-slug="${p.slug}">
   <header class="nav is-scrolled" id="nav">
@@ -189,7 +284,22 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
         <p class="pdp__badges-label">Parent Approved ✓</p>
         <div class="pdp__badges">
           <span>No Caffeine</span><span>No Sugar</span><span>No Artificial Colors</span><span>No Artificial Flavors</span><span>No Artificial Sweeteners</span>
-        </div>
+        </div>${p.bundleExtras ? `
+        <!-- TODO(commerce): Appstle Subscriptions isn't installed/wired up anywhere
+             in this codebase yet (no existing widget to match). This toggle is a
+             visual placeholder — both options add the bundle at list price until
+             Appstle is installed in Shopify admin and a real selling plan is wired
+             through src/lib/shopify.js. -->
+        <div class="pdp__purchase-type" id="purchaseType" role="radiogroup" aria-label="Purchase type">
+          <button type="button" class="pdp__purchase-opt active" data-plan="one-time" role="radio" aria-checked="true">
+            <span class="pdp__purchase-opt-title">One-time purchase</span>
+            <span class="pdp__purchase-opt-price">$${p.price.toFixed(2)}</span>
+          </button>
+          <button type="button" class="pdp__purchase-opt" data-plan="subscribe" role="radio" aria-checked="false">
+            <span class="pdp__purchase-opt-title">Subscribe &amp; Save</span>
+            <span class="pdp__purchase-opt-note">Set up with Appstle once installed</span>
+          </button>
+        </div>` : ''}
         <div class="pdp__buy">
           <div class="pdp__qty">
             <button id="qtyDec" aria-label="Decrease quantity">−</button>
@@ -198,7 +308,10 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
           </div>
           <button class="btn btn--primary" id="addBtn">Add to cart</button>
         </div>
-        <p class="pdp__stock">✓ In stock — ships in 1–2 business days</p>
+        <p class="pdp__stock">✓ In stock — ships in 1–2 business days</p>${p.bundleExtras ? `
+        <div class="pdp__trust-row">
+          ${p.bundleExtras.trustRow.map((t) => `<span>✓ ${escapeText(t)}</span>`).join('\n          ')}
+        </div>` : ''}
 
         <div class="pdp__accordion" id="accordion">
           <div class="pdp__acc-item open">
@@ -223,6 +336,36 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
       </div>
     </div>
   </section>
+${p.bundleExtras ? `
+  <!-- ══ WHAT'S INSIDE ══ -->
+  <section class="pdp-inside">
+    <div class="pdp-inside__inner">
+      <h2 class="section-title">WHAT'S<br /><em>INSIDE.</em></h2>
+      <div class="pdp-inside__stats">
+        ${p.bundleExtras.whatsInside.map((s) => `<div class="pdp-inside__stat"><span class="pdp-inside__num">${escapeText(s.stat)}</span><span class="pdp-inside__label">${escapeText(s.label)}</span></div>`).join('\n        ')}
+      </div>
+      <p class="pdp-inside__note">${escapeText(p.insideCopy)}</p>
+    </div>
+  </section>
+
+  <!-- ══ MEET OUR CRITTERS ══ -->
+  <section class="pdp-critters">
+    <div class="pdp-critters__inner">
+      <p class="section-eyebrow">The whole wild crew</p>
+      <h2 class="section-title">MEET OUR<br /><em>CRITTERS.</em></h2>
+      <div class="pdp-critters__grid">
+        ${p.bundleExtras.critters.map((c) => {
+          const flavor = FLAVORS.find((f) => f.id === c.flavorId);
+          return `<a class="pdp-critters__card" href="/products/${c.flavorId}/" style="--card-color:${flavor.color}">
+          <img src="${flavor.creatureImg}" alt="${escapeAttr(c.creature)}" loading="lazy" />
+          <h3 style="color:${flavor.color}">${escapeText(c.name)}</h3>
+          <p class="pdp-critters__creature">${escapeText(c.creature)}</p>
+          <p>${escapeText(c.blurb)}</p>
+        </a>`;
+        }).join('\n        ')}
+      </div>
+    </div>
+  </section>` : ''}
 
   <!-- ══ THE WILD DIFFERENCE ══ -->
   <section class="pdp-diff">
@@ -236,6 +379,17 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
       </div>
     </div>
   </section>
+${p.bundleExtras ? `
+  <!-- ══ KEY NUTRIENTS ══ -->
+  <section class="pdp-nutrients">
+    <div class="pdp-nutrients__inner">
+      <p class="section-eyebrow">In every stick</p>
+      <h2 class="section-title">KEY<br /><em>NUTRIENTS.</em></h2>
+      <ul class="pdp-nutrients__list">
+        ${p.bundleExtras.keyNutrients.map((n) => `<li>${escapeText(n)}</li>`).join('\n        ')}
+      </ul>
+    </div>
+  </section>` : ''}
 
   <!-- ══ TESTIMONIAL BAND ══ -->
   <section class="pdp-quote" id="quoteBand">
@@ -303,7 +457,20 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
   </footer>
 
   <div id="cartRoot"></div>
-  <script type="module" src="/src/js/product-static.js"></script>
+  <script type="module" src="/src/js/product-static.js"></script>${p.bundleExtras ? `
+  <script>
+    // Cosmetic one-time/Subscribe & Save toggle — see TODO above #purchaseType.
+    document.getElementById('purchaseType')?.addEventListener('click', (e) => {
+      const opt = e.target.closest('.pdp__purchase-opt');
+      if (!opt) return;
+      document.querySelectorAll('#purchaseType .pdp__purchase-opt').forEach((el) => {
+        el.classList.remove('active');
+        el.setAttribute('aria-checked', 'false');
+      });
+      opt.classList.add('active');
+      opt.setAttribute('aria-checked', 'true');
+    });
+  </script>` : ''}
   <!-- AI Syndicate Chatbot -->
   <script src="https://www.aisyndicate.com/chatbot/embed.js"
           data-key="cbk_475857a6ba2597800caad0e55dff84b070ef"
