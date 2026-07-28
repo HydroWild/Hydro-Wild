@@ -1,7 +1,9 @@
 // ── HydroWild Popup — email capture + discount reveal ──
 //
 // Flow: 10s delay → tease (masked code) → email input → code reveal
-// Email capture: POSTs to /api/subscribe → Omnisend (server-side, key stays secret)
+// Email capture: POSTs to /api/subscribe → Omnisend (server-side, key stays secret).
+// The reveal is never blocked on that request — a valid-format email reveals the
+// code immediately, and the Omnisend subscribe call fires in the background.
 // The subscribed contact triggers the Omnisend Welcome automation.
 //
 // Discount code WILD15 must exist in Shopify Admin → Discounts
@@ -9,6 +11,7 @@
 const POPUP_SEEN_KEY = 'hw_popup_v1';
 const DISCOUNT_CODE  = 'WILD15';
 const DELAY_MS       = 10_000;
+const EMAIL_RE       = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function initPopup() {
   // Only show once per session
@@ -60,23 +63,36 @@ function show(root) {
   root.querySelector('#popupNoThanks').addEventListener('click', dismiss);
 
   // Step 2 — email form
-  root.querySelector('#popupEmailForm').addEventListener('submit', async (e) => {
+  const emailInput = root.querySelector('#popupEmail');
+  const emailError = root.querySelector('#popupEmailError');
+
+  const clearEmailError = () => {
+    emailError.classList.remove('popup__error--visible');
+    emailInput.classList.remove('popup__input--error');
+  };
+  emailInput.addEventListener('input', clearEmailError);
+
+  root.querySelector('#popupEmailForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const email  = root.querySelector('#popupEmail').value.trim();
-    const btn    = root.querySelector('#popupEmailBtn');
-    if (!email) return;
+    const email = emailInput.value.trim();
 
-    btn.disabled    = true;
-    btn.textContent = 'Just a sec…';
-
-    try {
-      await saveEmailToOmnisend(email);
-    } catch (err) {
-      console.warn('[HydroWild popup] Email save failed:', err.message);
+    if (!EMAIL_RE.test(email)) {
+      emailError.textContent = 'Enter a valid email to unlock your code.';
+      emailError.classList.add('popup__error--visible');
+      emailInput.classList.add('popup__input--error');
+      emailInput.focus();
+      return;
     }
+    clearEmailError();
 
+    // Reveal immediately — the code isn't gated on the network round trip.
     goStep(root, 3);
     sessionStorage.setItem(POPUP_SEEN_KEY, '1');
+
+    // Fire-and-forget: subscribe the contact in the background.
+    saveEmailToOmnisend(email).catch((err) => {
+      console.warn('[HydroWild popup] Email save failed:', err.message);
+    });
   });
 
   // Step 3 — copy code
@@ -177,6 +193,7 @@ function buildHTML() {
               autocomplete="email"
               inputmode="email"
             />
+            <p class="popup__error" id="popupEmailError" role="alert"></p>
             <button class="popup__btn popup__btn--primary" type="submit" id="popupEmailBtn">
               Get My Code
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
