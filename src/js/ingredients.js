@@ -1,4 +1,5 @@
 // HydroWild Clean Ingredients page
+import '../lib/analytics.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initNav, initCartUI } from './ui.js';

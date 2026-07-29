@@ -3,6 +3,7 @@
 // and the Wild Starter Kit at /product.html?flavor=starter-kit (legacy —
 // the canonical URLs for flavors + starter kit are now /products/<slug>/,
 // see src/js/product-static.js and scripts/generate-product-pages.mjs).
+import '../lib/analytics.js';
 import { FLAVORS, getFlavor, getBundle } from '../data/products.js';
 import { initCartUI, initNav } from './ui.js';
 import { resolveProduct, renderPDP } from './lib/pdp.js';

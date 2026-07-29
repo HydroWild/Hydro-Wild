@@ -1,4 +1,5 @@
 // HydroWild homepage — immersive scroll experience.
+import '../lib/analytics.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';

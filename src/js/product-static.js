@@ -2,6 +2,7 @@
 // scripts/generate-product-pages.mjs. The slug comes from a data attribute
 // baked into the page (no query param, unlike the legacy product.html)
 // since each product now has its own real URL.
+import '../lib/analytics.js';
 import { getFlavor, getBundle } from '../data/products.js';
 import { initCartUI, initNav } from './ui.js';
 import { resolveProduct, renderPDP } from './lib/pdp.js';
