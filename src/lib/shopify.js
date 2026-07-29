@@ -1,42 +1,50 @@
 // ─────────────────────────────────────────────────────────────
-// HydroWild Headless Shopify — Storefront API client
+// HydroWild Headless Shopify — Storefront API client (Cart API)
 //
-// SETUP (one-time, done by HydroWild's Shopify admin):
-//  1. Shopify Admin → Settings → Apps and sales channels → Develop apps
-//  2. Create app → Configure Storefront API scopes, enable:
-//       ✓ unauthenticated_read_product_listings
-//       ✓ unauthenticated_read_product_inventory
-//       ✓ unauthenticated_write_checkouts
-//  3. Install app → copy "Storefront API access token"
-//  4. Copy .env.example → .env.local and fill in both values
+// The Storefront access token is a server-side secret (SHOPIFY_STOREFRONT_TOKEN,
+// set in Vercel) — this module never sees it. Every GraphQL call goes through
+// /api/shopify (see api/shopify.js), which injects the token and forwards the
+// request to Shopify. That endpoint also exposes a cheap GET config check so
+// the client can tell live checkout apart from demo mode without the token.
 //
-// Auto-detects mock mode — no token = demo mode, token present = live.
+// No token configured server-side → checkout deep-links to the live
+// hydrowild.com product pages instead, so the site still runs and demos
+// fully without credentials.
 // ─────────────────────────────────────────────────────────────
 
-export const USE_MOCK = !import.meta.env.VITE_SHOPIFY_TOKEN;
+const PROXY_ENDPOINT = '/api/shopify';
 
-const CONFIG = {
-  // Must be the .myshopify.com domain (not the custom domain) for CORS + API routing.
-  domain:          import.meta.env.VITE_SHOPIFY_DOMAIN   || 'your-store.myshopify.com',
-  storefrontToken: import.meta.env.VITE_SHOPIFY_TOKEN    || '',
-  apiVersion:      '2025-04',
-};
+// Store's .myshopify.com domain — not a secret, safe to label here. Used to
+// rewrite Shopify's returned checkoutUrl (see checkout() below) and must
+// match SHOPIFY_STORE_DOMAIN on the server if that's ever overridden.
+const STORE_DOMAIN = import.meta.env.VITE_SHOPIFY_DOMAIN || 'hydrowild.myshopify.com';
 
-const ENDPOINT = `https://${CONFIG.domain}/api/${CONFIG.apiVersion}/graphql.json`;
+class NotConfiguredError extends Error {}
+
+// ── Live/demo detection ──────────────────────────────────────
+// Cached after first call — cheap to call from anywhere (ui.js, checkout()).
+let _liveCheck = null;
+export function isLive() {
+  if (!_liveCheck) {
+    _liveCheck = fetch(PROXY_ENDPOINT)
+      .then((res) => (res.ok ? res.json() : { configured: false }))
+      .then((data) => Boolean(data.configured))
+      .catch(() => false);
+  }
+  return _liveCheck;
+}
 
 // ── Variant ID cache — pre-warmed on cart.add so checkout is instant ──
 const _variantCache = new Map(); // handle → Shopify variant GID
 
-// ── GraphQL client ───────────────────────────────────────────
+// ── GraphQL client (via server-side proxy) ───────────────────
 async function gql(query, variables = {}) {
-  const res = await fetch(ENDPOINT, {
+  const res = await fetch(PROXY_ENDPOINT, {
     method: 'POST',
-    headers: {
-      'Content-Type':                       'application/json',
-      'X-Shopify-Storefront-Access-Token':  CONFIG.storefrontToken,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, variables }),
   });
+  if (res.status === 503) throw new NotConfiguredError('Storefront API not configured');
   if (!res.ok) throw new Error(`Shopify API ${res.status}: ${res.statusText}`);
   const json = await res.json();
   if (json.errors?.length) throw new Error(json.errors[0].message);
@@ -72,12 +80,13 @@ export async function fetchVariantByHandle(handle) {
  * doesn't need to wait for the API round-trip.
  */
 export async function prefetchVariant(handle) {
-  if (USE_MOCK || _variantCache.has(handle)) return;
+  if (_variantCache.has(handle)) return;
   try {
     const variant = await fetchVariantByHandle(handle);
     _variantCache.set(handle, variant.id);
   } catch {
-    // Non-fatal — checkout will fetch it on demand if cache misses
+    // Non-fatal (including demo mode / NotConfiguredError) — checkout
+    // will fetch it on demand if the cache misses, or fall back to demo.
   }
 }
 
@@ -126,7 +135,7 @@ async function createShopifyCart(lines) {
  * after the client updates pricing in their admin.
  */
 export async function hydrateProducts(handles) {
-  if (USE_MOCK || !handles.length) return new Map();
+  if (!handles.length) return new Map();
 
   // Single batched GraphQL query — one round-trip for all products
   const fields = `variants(first: 1) { nodes { id availableForSale price { amount } compareAtPrice { amount } } }`;
@@ -136,7 +145,7 @@ export async function hydrateProducts(handles) {
   try {
     data = await gql(`query HydrateProducts { ${aliases} }`);
   } catch {
-    return new Map(); // Non-fatal — fall back to static prices
+    return new Map(); // Non-fatal (including demo mode) — fall back to static prices
   }
 
   const result = new Map();
@@ -157,20 +166,20 @@ export async function hydrateProducts(handles) {
  *
  * Real flow:
  *  1. Resolve Shopify variant IDs in parallel (uses prefetch cache where warm)
- *  2. Create a Shopify cart with CartCreate mutation
- *  3. Redirect to Shopify's hosted checkout URL
+ *  2. Create a Shopify cart with the Cart API's cartCreate mutation
+ *  3. Redirect to Shopify's hosted checkoutUrl
  *
  * Local cart is intentionally NOT cleared before redirect — if the user
  * hits back from the Shopify checkout page their cart is still intact.
  *
- * Mock flow:
+ * Demo flow (no SHOPIFY_STOREFRONT_TOKEN configured):
  *  Deep-link to the product page on hydrowild.com so the demo feels
  *  functional without needing an API token.
  */
 export async function checkout(cartItems = []) {
   if (!cartItems.length) return;
 
-  if (USE_MOCK) {
+  if (!(await isLive())) {
     const handles = [...new Set(cartItems.map((i) => i.handle).filter(Boolean))];
     const url = handles.length === 1
       ? `https://hydrowild.com/products/${handles[0]}`
@@ -211,7 +220,7 @@ export async function checkout(cartItems = []) {
   let redirectUrl = shopifyCart.checkoutUrl;
   try {
     const u = new URL(shopifyCart.checkoutUrl);
-    u.host = CONFIG.domain;
+    u.host = STORE_DOMAIN;
     redirectUrl = u.toString();
   } catch {
     // If parsing ever fails, fall back to the raw checkoutUrl.

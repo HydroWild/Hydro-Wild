@@ -10,9 +10,9 @@
 // as an npm predev/prebuild step (see package.json).
 //
 // NOTE on price: src/data/products.js holds the static fallback price used
-// whenever the Shopify Storefront API isn't hydrated (no VITE_SHOPIFY_TOKEN
-// — true for this repo/session). If the live deployment has a real token
-// configured, Shopify admin could show a different live price than what's
+// whenever the Shopify Storefront API isn't hydrated (no SHOPIFY_STOREFRONT_TOKEN
+// set in Vercel — true for this repo/session). If the live deployment has a real
+// token configured, Shopify admin could show a different live price than what's
 // baked into this static JSON-LD. There's no way to detect that from here;
 // keep this file's prices in sync with Shopify if the two ever diverge.
 
