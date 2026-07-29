@@ -105,14 +105,8 @@ ${JSON.stringify(articleLd, null, 2)}
   <script type="application/ld+json">
 ${JSON.stringify(ORGANIZATION_LD, null, 2)}
   </script>
-  <!-- ══ Google Analytics (GA4) ══ -->
+  <!-- ══ Google Analytics (GA4) — config/init in src/lib/analytics.js ══ -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R08X2S1DS8"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-R08X2S1DS8');
-  </script>
 </head>
 <body>
 

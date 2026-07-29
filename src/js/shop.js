@@ -1,4 +1,5 @@
 // HydroWild shop page — all 4 flavors with add-to-cart.
+import '../lib/analytics.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FLAVORS, BUNDLES } from '../data/products.js';

@@ -1,6 +1,7 @@
 // HydroWild — Static blog post pages
 // Content is pre-rendered into the HTML by scripts/generate-blog-posts.mjs;
 // this only wires up nav/cart and entrance animations.
+import '../lib/analytics.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initNav, initCartUI } from './ui.js';
