@@ -3,14 +3,52 @@ import { cart } from '../lib/cart.js';
 import { checkout, USE_MOCK, prefetchVariant } from '../lib/shopify.js';
 
 const fmt = (n) => `$${n.toFixed(2)}`;
+const FREE_SHIPPING_THRESHOLD = 20;
+const ANNOUNCE_KEY = 'hydrowild_announce_dismissed';
 
 export function initNav() {
+  initAnnouncementBar();
   const nav = document.getElementById('nav');
   if (!nav) return;
   const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 40);
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
   initMobileMenu(nav);
+}
+
+// Slim dismissible bar pinned above the nav on every page.
+export function initAnnouncementBar() {
+  try {
+    if (localStorage.getItem(ANNOUNCE_KEY) === '1') return;
+  } catch {
+    // localStorage unavailable — show the bar anyway, just can't remember dismissal.
+  }
+
+  const bar = document.createElement('div');
+  bar.className = 'announce-bar';
+  bar.id = 'announceBar';
+  bar.innerHTML = `
+    <p class="announce-bar__text"><strong>FREE shipping</strong> on 2+ boxes &amp; all bundles — mix &amp; match your flavors 🚚</p>
+    <button class="announce-bar__close" id="announceBarClose" aria-label="Dismiss announcement">×</button>`;
+  document.body.prepend(bar);
+  document.body.classList.add('has-announce-bar');
+
+  const setHeight = () => {
+    document.documentElement.style.setProperty('--announce-h', `${bar.offsetHeight}px`);
+  };
+  setHeight();
+  window.addEventListener('resize', setHeight);
+
+  bar.querySelector('#announceBarClose').addEventListener('click', () => {
+    try {
+      localStorage.setItem(ANNOUNCE_KEY, '1');
+    } catch {
+      // Ignore — bar still dismisses for this page view.
+    }
+    document.body.classList.remove('has-announce-bar');
+    window.removeEventListener('resize', setHeight);
+    bar.remove();
+  });
 }
 
 function initMobileMenu(nav) {
@@ -96,6 +134,10 @@ export function initCartUI() {
         <h3>Your Wild Stash</h3>
         <button class="cart-drawer__close" id="cartClose" aria-label="Close cart">×</button>
       </div>
+      <div class="cart-drawer__shipping" id="cartShipping" hidden>
+        <p class="cart-drawer__shipping-msg" id="cartShippingMsg"></p>
+        <div class="cart-drawer__shipping-track"><div class="cart-drawer__shipping-fill" id="cartShippingFill"></div></div>
+      </div>
       <div class="cart-drawer__items" id="cartItems"></div>
       <div class="cart-drawer__foot">
         <div class="cart-drawer__total"><span>Total</span><span id="cartTotal">$0.00</span></div>
@@ -113,6 +155,9 @@ export function initCartUI() {
   const totalEl = document.getElementById('cartTotal');
   const countEl = document.getElementById('cartCount');
   const toastEl = document.getElementById('toast');
+  const shippingEl = document.getElementById('cartShipping');
+  const shippingMsgEl = document.getElementById('cartShippingMsg');
+  const shippingFillEl = document.getElementById('cartShippingFill');
 
   const open = () => { overlay.classList.add('open'); drawer.classList.add('open'); };
   const close = () => { overlay.classList.remove('open'); drawer.classList.remove('open'); };
@@ -177,6 +222,23 @@ export function initCartUI() {
       setTimeout(() => countEl.classList.remove('pop'), 300);
     }
     totalEl.textContent = fmt(cart.total);
+
+    if (shippingEl) {
+      if (!items.length) {
+        shippingEl.hidden = true;
+      } else {
+        shippingEl.hidden = false;
+        const remaining = FREE_SHIPPING_THRESHOLD - cart.total;
+        const unlocked = remaining <= 0;
+        shippingEl.classList.toggle('is-unlocked', unlocked);
+        shippingMsgEl.innerHTML = unlocked
+          ? `🎉 You've unlocked <strong>FREE shipping</strong>!`
+          : `You're <strong>${fmt(remaining)}</strong> away from FREE shipping!`;
+        const pct = Math.min(100, (cart.total / FREE_SHIPPING_THRESHOLD) * 100);
+        shippingFillEl.style.width = `${pct}%`;
+      }
+    }
+
     itemsEl.innerHTML = items.length
       ? items
           .map(
