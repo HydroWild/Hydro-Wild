@@ -1,6 +1,6 @@
 // Shared UI: nav scroll state, cart drawer, toast.
 import { cart } from '../lib/cart.js';
-import { checkout, USE_MOCK, prefetchVariant } from '../lib/shopify.js';
+import { checkout, isLive, prefetchVariant } from '../lib/shopify.js';
 
 const fmt = (n) => `$${n.toFixed(2)}`;
 const FREE_SHIPPING_THRESHOLD = 20;
@@ -144,10 +144,15 @@ export function initCartUI() {
         <button class="btn btn--primary" id="cartCheckout">
           <span id="cartCheckoutLabel">Checkout</span>
         </button>
-        ${USE_MOCK ? '<p class="cart-drawer__note">Demo — add your Storefront API token in shopify.js to go live.</p>' : ''}
+        <p class="cart-drawer__note" id="cartDemoNote" hidden>Demo mode — set SHOPIFY_STOREFRONT_TOKEN in Vercel to go live.</p>
       </div>
     </aside>
     <div class="toast" id="toast"></div>`;
+
+  isLive().then((live) => {
+    const note = document.getElementById('cartDemoNote');
+    if (note) note.hidden = live;
+  });
 
   const overlay = document.getElementById('cartOverlay');
   const drawer = document.getElementById('cartDrawer');
@@ -181,18 +186,20 @@ export function initCartUI() {
   checkoutBtn.addEventListener('click', async () => {
     if (!cart.items.length) return toast('Your stash is empty — add a flavor first!');
 
+    const live = await isLive();
+
     // Loading state
     checkoutBtn.disabled = true;
-    if (checkoutLabel) checkoutLabel.textContent = USE_MOCK ? 'Opening…' : 'Sending to checkout…';
+    if (checkoutLabel) checkoutLabel.textContent = live ? 'Sending to checkout…' : 'Opening…';
 
     try {
       await checkout(cart.items);
-      // Mock opens a new tab — reset button so user can checkout again
-      if (USE_MOCK) {
+      // Demo mode opens a new tab — reset button so user can checkout again
+      if (!live) {
         checkoutBtn.disabled = false;
         if (checkoutLabel) checkoutLabel.textContent = 'Checkout';
       }
-      // Real mode redirects away — bfcache listener handles reset on back
+      // Live mode redirects away — bfcache listener handles reset on back
     } catch (err) {
       toast(`Checkout error: ${err.message}`);
       console.error(err);
