@@ -64,6 +64,18 @@ function renderPost(post) {
     mainEntityOfPage: url,
   };
 
+  const faqLd = post.faqs && post.faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: post.faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,7 +117,11 @@ ${JSON.stringify(articleLd, null, 2)}
   <script type="application/ld+json">
 ${JSON.stringify(ORGANIZATION_LD, null, 2)}
   </script>
-  <!-- ══ Google Analytics (GA4) — config/init in src/lib/analytics.js ══ -->
+${faqLd ? `  <!-- ══ FAQPage JSON-LD ══ -->
+  <script type="application/ld+json">
+${JSON.stringify(faqLd, null, 2)}
+  </script>
+` : ''}  <!-- ══ Google Analytics (GA4) — config/init in src/lib/analytics.js ══ -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R08X2S1DS8"></script>
 </head>
 <body>
@@ -151,7 +167,12 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
       <div class="post-content">
         ${post.body}
       </div>
-
+${faqLd ? `
+      <div class="post-faq">
+        <h2 class="post-faq__title">Frequently Asked Questions</h2>
+        ${post.faqs.map((f, i) => `<details${i === 0 ? ' open' : ''}><summary>${escapeText(f.q)}</summary><p>${escapeText(f.a)}</p></details>`).join('\n        ')}
+      </div>
+` : ''}
       <!-- In-article CTA -->
       <div class="post-cta">
         <p class="post-cta__title">READY TO<br /><em>GET WILD?</em></p>
