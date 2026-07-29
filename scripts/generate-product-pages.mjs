@@ -198,6 +198,7 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
           </div>
           <button class="btn btn--primary" id="addBtn">Add to cart</button>
         </div>
+        <p class="pdp__shipping-note">🚚 Add a 2nd box or grab a bundle for FREE shipping — mix &amp; match any flavors.</p>
         <p class="pdp__stock">✓ In stock — ships in 1–2 business days</p>
 
         <div class="pdp__accordion" id="accordion">
