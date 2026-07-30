@@ -12,6 +12,7 @@ export const ORGANIZATION_LD = {
     'HydroWild makes zero-sugar, zero-dye electrolyte drink mixes for kids and teens, with 7 vitamins and essential electrolytes in cryptid-themed flavors.',
   foundingDate: '2022',
   email: 'support@hydrowild.com',
+  telephone: '+1-205-671-4069',
   founders: [
     { '@type': 'Person', name: 'CJ Britton' },
     { '@type': 'Person', name: 'Lindey Britton' },
@@ -28,6 +29,7 @@ export const ORGANIZATION_LD = {
     '@type': 'ContactPoint',
     contactType: 'customer support',
     email: 'support@hydrowild.com',
+    telephone: '+1-205-671-4069',
     areaServed: 'US',
     availableLanguage: 'English',
   },
