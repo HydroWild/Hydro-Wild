@@ -36,6 +36,44 @@ const STARTER_KIT_INSIDE_COPY =
 
 const starterKit = getBundle('starter-kit');
 
+// Meta title/description copy per META-DESCRIPTIONS.md — ready-made copy for
+// flavors confirmed in the catalog. Any slug not listed here (a new flavor
+// added to products.js) falls back to the documented PATTERN below so new
+// pages still ship a unique, in-range title/description automatically.
+const PRODUCT_META = {
+  'blue-raspberry': {
+    title: 'Blue Raspberry — HydroWild Kids Hydration Mix',
+    description: 'Blue Raspberry HydroWild: zero-sugar, zero-dye drink mix with electrolytes and 7 vitamins. Bold berry flavor kids love. Just mix, shake, and hydrate.',
+  },
+  watermelon: {
+    title: 'Watermelon — HydroWild Kids Hydration Mix',
+    description: 'Watermelon HydroWild: zero-sugar, zero-dye drink mix with electrolytes and 7 vitamins. Juicy summer flavor kids ask for. Mix, shake, and hydrate.',
+  },
+  'fruit-punch': {
+    title: 'Fruit Punch — HydroWild Kids Hydration Mix',
+    description: 'Fruit Punch HydroWild: zero-sugar, zero-dye drink mix with electrolytes and 7 vitamins. Classic punch flavor without the junk. Mix, shake, hydrate.',
+  },
+  'strawberry-lemonade': {
+    title: 'Strawberry Lemonade — HydroWild Hydration Mix',
+    description: 'Strawberry Lemonade HydroWild: zero-sugar, zero-dye drink mix with electrolytes and 7 vitamins. Sweet-tart flavor kids love. Mix, shake, hydrate.',
+  },
+  'starter-kit': {
+    title: 'Wild Starter Kit — HydroWild Kids Hydration Mix',
+    description: 'Wild Starter Kit HydroWild: sample every zero-sugar, zero-dye flavor with electrolytes and 7 vitamins in one box. The perfect first taste. Mix, shake, hydrate.',
+  },
+};
+
+// Title pattern:       `{Flavor} — HydroWild Kids Hydration Mix`
+// Description pattern: `{Flavor} HydroWild: zero-sugar, zero-dye hydration
+// drink mix with electrolytes and 7 vitamins. Kid-approved {descriptor}.
+// Mix, shake, hydrate.`
+function fallbackMeta(name) {
+  return {
+    title: `${name} — HydroWild Kids Hydration Mix`,
+    description: `${name} HydroWild: zero-sugar, zero-dye hydration drink mix with electrolytes and 7 vitamins. Kid-approved flavor kids love. Mix, shake, hydrate.`,
+  };
+}
+
 const PRODUCTS = [
   ...FLAVORS.map((f) => ({
     slug: f.id,
@@ -86,9 +124,10 @@ function escapeText(str) {
 
 function renderProduct(p) {
   const url = `${SITE}/products/${p.slug}/`;
-  const pageTitle = `HydroWild ${p.pageName} — Kids Daily Hydration`;
-  const ogTitle = `HydroWild ${p.pageName}`;
-  const description = `${p.tagline} ${p.insideCopy}`;
+  const meta = PRODUCT_META[p.slug] || fallbackMeta(p.pageName);
+  const pageTitle = meta.title;
+  const ogTitle = meta.title;
+  const description = meta.description;
 
   const productLd = {
     '@context': 'https://schema.org',
@@ -141,6 +180,7 @@ function renderProduct(p) {
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@drinkhydrowild" />
   <meta name="twitter:title" content="${escapeAttr(ogTitle)}" />
+  <meta name="twitter:description" content="${escapeAttr(description)}" />
   <meta name="twitter:image" content="${SITE}${p.mainImg}" />
   <!-- ══ Authorship & SEO ══ -->
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
