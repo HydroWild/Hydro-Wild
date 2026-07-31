@@ -41,9 +41,43 @@ function toISODate(dateStr) {
   return d.toISOString().slice(0, 10);
 }
 
+// Meta title/description per META-DESCRIPTIONS.md.
+// Title pattern: `{Post Title} — HydroWild Blog`, trimmed to a word
+// boundary so the total stays at or under 60 characters.
+const TITLE_SUFFIX = ' — HydroWild Blog';
+const TITLE_MAX = 60;
+const DESCRIPTION_MAX = 160;
+
+function seoTitle(title) {
+  const budget = TITLE_MAX - TITLE_SUFFIX.length;
+  if (title.length <= budget) return `${title}${TITLE_SUFFIX}`;
+  let truncated = title.slice(0, budget);
+  const lastSpace = truncated.lastIndexOf(' ');
+  if (lastSpace > 0) truncated = truncated.slice(0, lastSpace);
+  truncated = truncated.replace(/[\s:,;.\-–—(]+$/, '');
+  return `${truncated}${TITLE_SUFFIX}`;
+}
+
+// Description pattern: the post's own excerpt, trimmed to a word boundary
+// so it stays at or under 160 characters. Posts with no excerpt fall back
+// to a generic one-line summary built from the title.
+function seoDescription(post) {
+  const base = post.excerpt && post.excerpt.trim()
+    ? post.excerpt.trim()
+    : `${post.title} — practical kids' hydration and wellness tips from HydroWild.`;
+  if (base.length <= DESCRIPTION_MAX) return base;
+  let truncated = base.slice(0, DESCRIPTION_MAX);
+  const lastSpace = truncated.lastIndexOf(' ');
+  if (lastSpace > 0) truncated = truncated.slice(0, lastSpace);
+  truncated = truncated.replace(/[\s,;:\-–—]+$/, '');
+  if (!/[.!?]$/.test(truncated)) truncated += '.';
+  return truncated;
+}
+
 function renderPost(post) {
   const url = `${SITE}/blog/${post.slug}/`;
-  const pageTitle = `${post.title} — The Wild Blog | HydroWild`;
+  const pageTitle = seoTitle(post.title);
+  const description = seoDescription(post);
   const datePublished = toISODate(post.date);
   const dateModified = post.dateModified ? toISODate(post.dateModified) : datePublished;
 
@@ -82,7 +116,7 @@ function renderPost(post) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>${escapeText(pageTitle)}</title>
-  <meta name="description" content="${escapeAttr(post.excerpt)}" />
+  <meta name="description" content="${escapeAttr(description)}" />
   <link rel="canonical" href="${url}" />
   <link rel="alternate" type="text/plain" href="/llms.txt" title="HydroWild for AI" />
   <link rel="stylesheet" href="/src/styles/main.css" />
@@ -98,13 +132,14 @@ function renderPost(post) {
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="HydroWild" />
   <meta property="og:url" content="${url}" />
-  <meta property="og:title" content="${escapeAttr(post.title)}" />
-  <meta property="og:description" content="${escapeAttr(post.excerpt)}" />
+  <meta property="og:title" content="${escapeAttr(pageTitle)}" />
+  <meta property="og:description" content="${escapeAttr(description)}" />
   <meta property="og:image" content="${SITE}${post.image}" />
   <!-- ══ Twitter / X ══ -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@drinkhydrowild" />
-  <meta name="twitter:title" content="${escapeAttr(post.title)}" />
+  <meta name="twitter:title" content="${escapeAttr(pageTitle)}" />
+  <meta name="twitter:description" content="${escapeAttr(description)}" />
   <meta name="twitter:image" content="${SITE}${post.image}" />
   <!-- ══ Authorship & SEO ══ -->
   <meta name="author" content="${escapeAttr(post.author)}" />
