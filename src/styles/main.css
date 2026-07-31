@@ -3909,3 +3909,28 @@ body.menu-is-open { overflow: hidden; }
   .blog-section { text-align: center; }
   .blog-card__body { text-align: left; }
 }
+
+/* ============================================================
+   READING PROGRESS BAR
+   Thin bar fixed at the top of the viewport that fills as the
+   reader scrolls. Used on post.html and story.html.
+   ============================================================ */
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;              /* JS updates this */
+  background: #FF3ECD;    /* HydroWild Pink; try a gradient below if you like */
+  /* background: linear-gradient(90deg, #0269B7, #FF3ECD); */
+  z-index: 9999;
+  transition: width 80ms linear;
+  will-change: width;
+  pointer-events: none;   /* never blocks clicks */
+}
+
+/* Optional: respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reading-progress { transition: none; }
+}

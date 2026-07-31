@@ -3,12 +3,14 @@ import '../lib/analytics.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initNav, initCartUI } from './ui.js';
+import { initReadingProgress } from './reading-progress.js';
 import { POSTS } from '../data/posts.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 initNav();
 initCartUI();
+initReadingProgress();
 
 // ── Find the post from URL ?slug= ──────────────────────
 const params = new URLSearchParams(window.location.search);

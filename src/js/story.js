@@ -3,11 +3,13 @@ import '../lib/analytics.js';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { initNav, initCartUI } from './ui.js';
+import { initReadingProgress } from './reading-progress.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 initNav();
 initCartUI();
+initReadingProgress();
 
 // ── Reveal animations (reuses [data-reveal] pattern from main) ──
 document.querySelectorAll('[data-reveal]').forEach((el) => {
