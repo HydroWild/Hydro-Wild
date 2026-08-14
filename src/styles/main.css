@@ -168,11 +168,11 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  background: var(--navy);
-  color: var(--white);
+  background: var(--pink);
+  color: var(--navy);
   padding: 0.6rem 2.75rem 0.6rem 1rem;
   text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(9, 0, 94, 0.15);
 }
 .announce-bar__text {
   font-size: 0.85rem;
@@ -185,7 +185,7 @@ a { color: inherit; text-decoration: none; }
   font-weight: 900;
   font-style: italic;
   text-transform: uppercase;
-  color: var(--hw-lime-green);
+  color: var(--navy);
 }
 .announce-bar__close {
   position: absolute;
@@ -194,7 +194,7 @@ a { color: inherit; text-decoration: none; }
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: var(--white);
+  color: var(--navy);
   font-size: 1.3rem;
   line-height: 1;
   cursor: pointer;

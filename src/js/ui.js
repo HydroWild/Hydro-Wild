@@ -5,6 +5,8 @@ import { checkout, isLive, prefetchVariant } from '../lib/shopify.js';
 const fmt = (n) => `$${n.toFixed(2)}`;
 const FREE_SHIPPING_THRESHOLD = 20;
 const ANNOUNCE_KEY = 'hydrowild_announce_dismissed';
+// sessionStorage on purpose — the offer bar should come back next visit/session,
+// not stay dismissed forever the way a localStorage flag would.
 
 export function initNav() {
   initAnnouncementBar();
@@ -19,16 +21,16 @@ export function initNav() {
 // Slim dismissible bar pinned above the nav on every page.
 export function initAnnouncementBar() {
   try {
-    if (localStorage.getItem(ANNOUNCE_KEY) === '1') return;
+    if (sessionStorage.getItem(ANNOUNCE_KEY) === '1') return;
   } catch {
-    // localStorage unavailable — show the bar anyway, just can't remember dismissal.
+    // sessionStorage unavailable — show the bar anyway, just can't remember dismissal.
   }
 
   const bar = document.createElement('div');
   bar.className = 'announce-bar';
   bar.id = 'announceBar';
   bar.innerHTML = `
-    <p class="announce-bar__text"><strong>FREE shipping</strong> on 2+ boxes &amp; all bundles — mix &amp; match your flavors 🚚</p>
+    <p class="announce-bar__text">15% off your first order — code <strong>WILD15</strong>, applied at checkout.</p>
     <button class="announce-bar__close" id="announceBarClose" aria-label="Dismiss announcement">×</button>`;
   document.body.prepend(bar);
   document.body.classList.add('has-announce-bar');
@@ -41,7 +43,7 @@ export function initAnnouncementBar() {
 
   bar.querySelector('#announceBarClose').addEventListener('click', () => {
     try {
-      localStorage.setItem(ANNOUNCE_KEY, '1');
+      sessionStorage.setItem(ANNOUNCE_KEY, '1');
     } catch {
       // Ignore — bar still dismisses for this page view.
     }
