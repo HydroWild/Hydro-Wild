@@ -1092,7 +1092,18 @@ body.has-announce-bar .nav { top: var(--announce-h, 40px); }
   font-weight: 700;
 }
 .cart-item__remove { background: none; border: none; color: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 1.1rem; }
-.cart-drawer__empty { text-align: center; color: rgba(255, 255, 255, 0.5); margin-top: 3rem; }
+.cart-drawer__empty { text-align: center; margin-top: 3rem; }
+.cart-drawer__empty-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: 1.15rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+.cart-drawer__empty-body { color: rgba(255, 255, 255, 0.6); font-size: 0.9rem; margin-bottom: 1.4rem; }
+.cart-drawer__empty-cta { display: inline-block; }
 .cart-drawer__foot { padding: 1.5rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
 .cart-drawer__total { display: flex; justify-content: space-between; font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; }
 .cart-drawer__foot .btn { width: 100%; text-align: center; }

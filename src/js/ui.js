@@ -267,7 +267,12 @@ export function initCartUI() {
         </div>`
           )
           .join('')
-      : '<p class="cart-drawer__empty">Nothing wild in here yet.</p>';
+      : `
+        <div class="cart-drawer__empty">
+          <p class="cart-drawer__empty-title">Your cart's gone quiet.</p>
+          <p class="cart-drawer__empty-body">Four legendary critters are waiting. Pick your flavor.</p>
+          <a href="/shop.html" class="btn btn--primary cart-drawer__empty-cta">Shop all flavors</a>
+        </div>`;
   });
 
   let toastTimer;
