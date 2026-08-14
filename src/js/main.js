@@ -95,7 +95,7 @@ worlds.innerHTML = FLAVORS.map(
   <section class="world${i % 2 ? ' world--rtl' : ''}" id="world-${f.id}" style="background:${f.bg}">
     <div class="world__inner">
       <div class="world__ghost">${f.name}</div>
-      <img class="world__creature" src="${f.creatureImg}" alt="${f.creature}" loading="lazy" />
+      <img class="world__creature" src="${f.creatureImg}" alt="${f.creature}, HydroWild ${f.name} mascot" loading="lazy" />
       <div class="world__content" style="${i % 2 ? 'direction:rtl' : ''}">
         <div class="world__visual" style="direction:ltr">
           <img class="world__pack" src="${f.packImg}" alt="HydroWild ${f.name}" loading="lazy" />
@@ -276,8 +276,13 @@ document.querySelectorAll('[data-reveal]').forEach((el) => {
 });
 
 // ── Stat counters ──
-document.querySelectorAll('[data-count]').forEach((el) => {
-  const target = Number(el.dataset.count);
+// Markup already ships the real final value (crawlers/no-JS see correct numbers).
+// Here we just read it, animate 0 → value for sighted users, then restore the exact text.
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('.stat__num').forEach((el) => {
+  const finalText = el.textContent.trim();
+  const target = Number(finalText);
+  if (prefersReducedMotion || Number.isNaN(target)) return;
   ScrollTrigger.create({
     trigger: el,
     start: 'top 85%',
@@ -286,7 +291,13 @@ document.querySelectorAll('[data-count]').forEach((el) => {
       gsap.fromTo(
         el,
         { innerText: 0 },
-        { innerText: target, duration: 1.4, snap: { innerText: 1 }, ease: 'power2.out' }
+        {
+          innerText: target,
+          duration: 1.4,
+          snap: { innerText: 1 },
+          ease: 'power2.out',
+          onComplete: () => { el.textContent = finalText; },
+        }
       );
     },
   });
@@ -427,6 +438,7 @@ document.querySelectorAll('#homeFaqAcc .ing-acc__item').forEach((item) => {
     item.classList.toggle('open', !isOpen);
     body.style.maxHeight = isOpen ? '0px' : body.scrollHeight + 'px';
     if (icon) icon.textContent = isOpen ? '+' : '−';
+    head.setAttribute('aria-expanded', String(!isOpen));
   });
 });
 

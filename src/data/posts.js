@@ -141,11 +141,11 @@ export const POSTS = [
       <p>Walk down the sports drink aisle and you'll find plenty of options that claim to "replenish electrolytes." What the label doesn't scream is that most of those drinks also pack <strong>20–30 grams of sugar per serving</strong> — more than a candy bar — along with artificial dyes linked to behavioral changes in some children.</p>
       <p>That's the trade-off parents have been forced to make: hydration or health. We built HydroWild because that trade-off is nonsense.</p>
       <h2>What HydroWild Actually Delivers</h2>
-      <p>Every HydroWild packet includes potassium and magnesium — the two key electrolytes most depleted during physical activity. We also stacked in 9 essential vitamins including Vitamin C, Vitamin D, and B-complex vitamins that support energy metabolism and immune function.</p>
+      <p>Every HydroWild packet includes potassium and magnesium — the two key electrolytes most depleted during physical activity. We also stacked in 7 essential vitamins including Vitamin C, Vitamin D, and B-complex vitamins that support energy metabolism and immune function.</p>
       <ul>
         <li>✦ Zero sugar. Zero artificial dyes.</li>
         <li>✦ Potassium &amp; magnesium for real electrolyte replenishment</li>
-        <li>✦ 9 essential vitamins kids need daily</li>
+        <li>✦ 7 essential vitamins kids need daily</li>
         <li>✦ Sweetened with stevia — zero glycemic impact</li>
       </ul>
       <p>Nothing your kid doesn't need. Everything they do.</p>
@@ -169,7 +169,7 @@ export const POSTS = [
       <p>Packing a nutritious lunchbox your kids will actually eat can feel like a daily puzzle. Between picky eaters and busy schedules, it's easy to fall into the routine of pre-packaged snacks and sugary drinks. But with a few simple swaps, you can create a lunchbox that's both healthy and fun—without the extra stress.</p>
       <p>Here's how to make lunchtime nutritious, delicious, and hassle-free with easy swaps your kids will love!</p>
       <h2>1. Ditch Sugary Drinks for a Vitamin Boost</h2>
-      <p>Many popular kids' drinks are loaded with hidden sugars, artificial flavors, and unnecessary additives. Instead of sugary juice boxes or sports drinks, swap them out for <strong>HydroWild Complete Hydration Drink Mix</strong>. Packed with 9 essential vitamins and minerals, including magnesium and potassium, it delivers hydration and nutrition without any sugar or artificial junk. Just mix a packet with water, and your child gets a flavorful boost that supports their energy and immune health.</p>
+      <p>Many popular kids' drinks are loaded with hidden sugars, artificial flavors, and unnecessary additives. Instead of sugary juice boxes or sports drinks, swap them out for <strong>HydroWild Complete Hydration Drink Mix</strong>. Packed with 7 essential vitamins and minerals, including magnesium and potassium, it delivers hydration and nutrition without any sugar or artificial junk. Just mix a packet with water, and your child gets a flavorful boost that supports their energy and immune health.</p>
       <h2>2. Trade Processed Snacks for Whole-Food Alternatives</h2>
       <p>It's tempting to grab convenient snack packs filled with refined carbs and artificial ingredients, but healthier swaps are just as easy:</p>
       <ul>

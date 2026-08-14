@@ -1,19 +1,19 @@
 ---
 title: "HydroWild — Get Wild. Stay Hydrated."
 url: https://hydrowild.com/
-description: "Zero-sugar, zero-dye, science-backed hydration for kids and teens. 9 vitamins and electrolytes in four wild flavors, made in the USA."
+description: "Zero-sugar, zero-dye, science-backed hydration for kids and teens. 7 vitamins and electrolytes in four wild flavors, made in the USA."
 ---
 
 # Get Wild. Stay Hydrated.
 
-Science-backed hydration for kids and teens. 9 vitamins and electrolytes, nothing artificial — and a legendary critter in every flavor.
+Science-backed hydration for kids and teens. 7 vitamins and electrolytes, nothing artificial — and a legendary critter in every flavor.
 
 **Zero sugar · Zero dyes · 100% wild · Made in the USA**
 
 ## The Wild Variety Pack
 Four legendary flavors. Four mythic critters. Zero sugar. Zero compromise.
 - 32 stick packs total
-- 9 vitamins and electrolytes
+- 7 vitamins and electrolytes
 - Made in the USA
 - No artificial ingredients
 
