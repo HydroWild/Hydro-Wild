@@ -841,6 +841,25 @@ body.has-announce-bar .nav { top: var(--announce-h, 40px); }
   transition: color 0.22s, transform 0.22s;
 }
 .footer__cols a:hover { color: var(--lime); transform: translateX(4px); }
+.footer__payments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.5rem;
+}
+.footer__payment-icon {
+  width: 40px;
+  height: 26px;
+  border-radius: 4px;
+  filter: grayscale(100%);
+  opacity: 0.6;
+  transition: filter 0.25s, opacity 0.25s;
+}
+.footer__payment-icon:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+}
 .footer__bottom {
   display: flex;
   justify-content: space-between;
@@ -3743,6 +3762,7 @@ body.menu-is-open { overflow: hidden; }
   .footer__dots { justify-content: center; }
   .footer__social { display: flex; justify-content: center; }
   .footer__cols { justify-content: center; text-align: center; width: 100%; }
+  .footer__payments { justify-content: center; }
   .footer__bottom { align-items: center; text-align: center; }
 
   /* ── Shop page: single column, centered ── */
