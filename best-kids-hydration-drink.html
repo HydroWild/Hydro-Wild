@@ -152,11 +152,13 @@
       <a href="/story.html">Our Story</a>
       <a href="/shop.html">Shop</a>
       <a href="/blog.html">Blog</a>
+      <a href="/best-kids-hydration-drink.html" style="color:var(--lime)">Best Kids Hydration Drink</a>
       <a href="/contact.html">Contact</a>
     </nav>
-    <a href="/shop.html" class="nav__cart" aria-label="Shop HydroWild">
+    <button class="nav__cart" id="cartToggle" aria-label="Open cart">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6L5 3H2"/></svg>
-    </a>
+      <span class="nav__cart-count" id="cartCount">0</span>
+    </button>
   </header>
 
   <main>
@@ -253,7 +255,8 @@
       </div>
       <div class="footer__cols">
         <div><h4>Shop</h4><a href="/products/blue-raspberry/">Blue Raspberry</a><a href="/products/watermelon/">Watermelon</a><a href="/products/strawberry-lemonade/">Strawberry Lemonade</a><a href="/products/fruit-punch/">Fruit Punch</a></div>
-        <div><h4>Company</h4><a href="/story.html">Our Story</a><a href="/ingredients.html">Clean Ingredients</a><a href="/best-kids-hydration-drink.html">Best Kids Hydration Drink</a><a href="/contact.html">Contact</a></div>
+        <div><h4>Company</h4><a href="/story.html">Our Story</a><a href="/ingredients.html">Clean Ingredients</a><a href="/shop.html">Shop All</a><a href="/blog.html">Blog</a>
+      <a href="/contact.html">Contact</a></div>
         <div><h4>Support</h4><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms of Service</a><a href="/returns.html">Returns</a><a href="/shipping.html">Shipping</a></div>
       </div>
     </div>
@@ -272,6 +275,8 @@
       <p class="footer__note">Get Wild. Stay Hydrated.</p>
     </div>
   </footer>
+
+  <div id="cartRoot"></div>
 
   <script type="module" src="/src/js/best-kids.js"></script>
   <!-- AI Syndicate Chatbot -->
