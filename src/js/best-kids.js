@@ -1,5 +1,6 @@
-// Best Kids Hydration Drink (AEO/GEO page) — no cart/nav JS, just the shared announcement bar.
+// Best Kids Hydration Drink (AEO/GEO page).
 import '../lib/analytics.js';
-import { initAnnouncementBar } from './ui.js';
+import { initNav, initCartUI } from './ui.js';
 
-initAnnouncementBar();
+initNav();
+initCartUI();
