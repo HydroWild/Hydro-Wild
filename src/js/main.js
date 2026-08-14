@@ -276,8 +276,13 @@ document.querySelectorAll('[data-reveal]').forEach((el) => {
 });
 
 // ── Stat counters ──
-document.querySelectorAll('[data-count]').forEach((el) => {
-  const target = Number(el.dataset.count);
+// Markup already ships the real final value (crawlers/no-JS see correct numbers).
+// Here we just read it, animate 0 → value for sighted users, then restore the exact text.
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('.stat__num').forEach((el) => {
+  const finalText = el.textContent.trim();
+  const target = Number(finalText);
+  if (prefersReducedMotion || Number.isNaN(target)) return;
   ScrollTrigger.create({
     trigger: el,
     start: 'top 85%',
@@ -286,7 +291,13 @@ document.querySelectorAll('[data-count]').forEach((el) => {
       gsap.fromTo(
         el,
         { innerText: 0 },
-        { innerText: target, duration: 1.4, snap: { innerText: 1 }, ease: 'power2.out' }
+        {
+          innerText: target,
+          duration: 1.4,
+          snap: { innerText: 1 },
+          ease: 'power2.out',
+          onComplete: () => { el.textContent = finalText; },
+        }
       );
     },
   });
