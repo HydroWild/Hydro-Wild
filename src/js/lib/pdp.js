@@ -75,8 +75,8 @@ const WILD_DIFF = [
     b: 'Crafted with real fruit-inspired flavor for a taste kids love — and parents approve. No artificial junk, just pure hydration fun.',
   },
   {
-    t: '9 Essential Vitamins & Electrolytes',
-    b: 'Every stick packs 9 vitamins (A, B6, B9, B12, C, D & K) and electrolytes, including potassium and magnesium, to help fuel active kids all day long.',
+    t: '7 Essential Vitamins & Electrolytes',
+    b: 'Every stick packs 7 vitamins (A, B6, B9, B12, C, D & K) and electrolytes, including potassium and magnesium, to help fuel active kids all day long.',
   },
   {
     t: 'Clean Label Promise',

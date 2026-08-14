@@ -1,13 +1,13 @@
 # HydroWild
 
-> HydroWild makes science-backed, zero-sugar, zero-dye hydration drinks for kids and teens — 9 vitamins and electrolytes in four wild flavors, made in the USA. Founded in 2022 by CJ and Lindey Britton in Birmingham, Alabama.
+> HydroWild makes science-backed, zero-sugar, zero-dye hydration drinks for kids and teens — 7 vitamins and electrolytes in four wild flavors, made in the USA. Founded in 2022 by CJ and Lindey Britton in Birmingham, Alabama.
 
 ## About
 - Founded: 2022, by CJ and Lindey Britton
 - Based in: Birmingham, Alabama, USA
 - Product: powdered stick-pack hydration drink mix for kids and teens
 - Sweetener: stevia — zero sugar, zero artificial sweeteners
-- Contains: 9 vitamins and electrolytes, including potassium and magnesium
+- Contains: 7 vitamins and electrolytes, including potassium and magnesium
 - Free of: added sugar, artificial dyes, artificial ingredients
 - Made in: USA
 - Contact: support@hydrowild.com
@@ -29,7 +29,7 @@
 
 ## FAQ
 - What sweetener does HydroWild use? Stevia — zero sugar and zero artificial sweeteners.
-- How many vitamins and electrolytes are in each pack? 9, including potassium and magnesium.
+- How many vitamins and electrolytes are in each pack? 7, including potassium and magnesium.
 - Who founded HydroWild? CJ and Lindey Britton, in 2022, in Birmingham, Alabama.
 - Where is it made? In the USA.
 

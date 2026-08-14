@@ -60,7 +60,7 @@ if (!post || !root) {
       <!-- In-article CTA -->
       <div class="post-cta">
         <p class="post-cta__title">READY TO<br /><em>GET WILD?</em></p>
-        <p class="post-cta__sub">Zero sugar. Zero dyes. Nine vitamins. One legendary drink.</p>
+        <p class="post-cta__sub">Zero sugar. Zero dyes. Seven vitamins. One legendary drink.</p>
         <a href="/shop.html" class="btn btn--primary">Shop All Flavors</a>
       </div>
     </article>
