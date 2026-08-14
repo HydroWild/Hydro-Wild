@@ -164,7 +164,7 @@ ${JSON.stringify(faqLd, null, 2)}
   <!-- ══ NAV ══ -->
   <header class="nav is-scrolled" id="nav">
     <a href="/" class="nav__logo">
-      <img src="/assets/logos/HydroWild_Logo_White.svg" alt="HydroWild" />
+      <img src="/assets/logos/logo-white.svg" alt="HydroWild" />
     </a>
     <nav class="nav__links">
       <a href="/ingredients.html">The Science</a>
@@ -222,7 +222,7 @@ ${faqLd ? `
     <img src="/assets/img/creature-yeti.png" alt="" class="footer__creature" aria-hidden="true" loading="lazy" />
     <div class="footer__top">
       <div class="footer__brand">
-        <img src="/assets/logos/HydroWild_Logo_White.svg" alt="HydroWild" class="footer__logo" />
+        <img src="/assets/logos/logo-white.svg" alt="HydroWild" class="footer__logo" />
         <p class="footer__tagline">Zero sugar. Zero dyes. Four legendary critters guarding four flavors.</p>
         <div class="footer__dots" aria-hidden="true">
           <span style="background:#29ABE2"></span>
