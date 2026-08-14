@@ -95,7 +95,7 @@ worlds.innerHTML = FLAVORS.map(
   <section class="world${i % 2 ? ' world--rtl' : ''}" id="world-${f.id}" style="background:${f.bg}">
     <div class="world__inner">
       <div class="world__ghost">${f.name}</div>
-      <img class="world__creature" src="${f.creatureImg}" alt="${f.creature}" loading="lazy" />
+      <img class="world__creature" src="${f.creatureImg}" alt="${f.creature}, HydroWild ${f.name} mascot" loading="lazy" />
       <div class="world__content" style="${i % 2 ? 'direction:rtl' : ''}">
         <div class="world__visual" style="direction:ltr">
           <img class="world__pack" src="${f.packImg}" alt="HydroWild ${f.name}" loading="lazy" />
@@ -438,6 +438,7 @@ document.querySelectorAll('#homeFaqAcc .ing-acc__item').forEach((item) => {
     item.classList.toggle('open', !isOpen);
     body.style.maxHeight = isOpen ? '0px' : body.scrollHeight + 'px';
     if (icon) icon.textContent = isOpen ? '+' : '−';
+    head.setAttribute('aria-expanded', String(!isOpen));
   });
 });
 
