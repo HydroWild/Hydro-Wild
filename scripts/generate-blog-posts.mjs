@@ -171,6 +171,7 @@ ${JSON.stringify(faqLd, null, 2)}
       <a href="/story.html">Our Story</a>
       <a href="/shop.html">Shop</a>
       <a href="/blog.html" style="color:var(--hw-lime-green)">Blog</a>
+      <a href="/best-kids-hydration-drink.html">Best Kids Hydration Drink</a>
       <a href="/contact.html">Contact</a>
     </nav>
     <button class="nav__cart" id="cartToggle" aria-label="Open cart">
