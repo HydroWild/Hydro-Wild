@@ -74,6 +74,56 @@ function seoDescription(post) {
   return truncated;
 }
 
+// Minimal converter for the constrained HTML subset used in POSTS[].body
+// (see the FIELD GUIDE at the top of src/data/posts.js: p, h2, h3, ul/li, strong).
+function inlineToMarkdown(text) {
+  return text
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/<strong>\s*(.*?)\s*<\/strong>/gis, '**$1**')
+    .replace(/<a href="([^"]*)"[^>]*>\s*(.*?)\s*<\/a>/gis, '[$2]($1)')
+    .replace(/&amp;/g, '&')
+    .replace(/&rsquo;/g, '’');
+}
+
+// Minimal block-level parser for the constrained HTML subset used in
+// POSTS[].body (see the FIELD GUIDE at the top of src/data/posts.js:
+// p, h2, h3, ul/li, with inline strong/a). Walks top-level block tags
+// in order so adjacent blocks always land on their own markdown lines,
+// regardless of the source's indentation/whitespace.
+function htmlToMarkdown(html) {
+  const blocks = [];
+  const blockRe = /<h2>([\s\S]*?)<\/h2>|<h3>([\s\S]*?)<\/h3>|<ul>([\s\S]*?)<\/ul>|<p>([\s\S]*?)<\/p>/gi;
+  let m;
+  while ((m = blockRe.exec(html))) {
+    const [, h2, h3, ul, p] = m;
+    if (h2 !== undefined) blocks.push(`## ${inlineToMarkdown(h2)}`);
+    else if (h3 !== undefined) blocks.push(`### ${inlineToMarkdown(h3)}`);
+    else if (ul !== undefined) {
+      const items = [...ul.matchAll(/<li>([\s\S]*?)<\/li>/gi)].map((li) => `- ${inlineToMarkdown(li[1])}`);
+      blocks.push(items.join('\n'));
+    } else if (p !== undefined) blocks.push(inlineToMarkdown(p));
+  }
+  return blocks.join('\n\n');
+}
+
+function renderMarkdown(post, url) {
+  const faqSection = post.faqs && post.faqs.length
+    ? `\n\n## Frequently Asked Questions\n\n${post.faqs.map((f) => `**${f.q}**\n${f.a}`).join('\n\n')}`
+    : '';
+  return `# ${post.title}
+
+*By ${post.author} — ${post.date}*
+
+${htmlToMarkdown(post.body)}${faqSection}
+
+---
+[Back to the Blog](https://www.hydrowild.com/blog.html) · [Shop all flavors](https://www.hydrowild.com/shop.html)
+
+<!-- Created by AISyndicate.com -->
+`;
+}
+
 function renderPost(post) {
   const url = `${SITE}/blog/${post.slug}/`;
   const pageTitle = seoTitle(post.title);
@@ -98,6 +148,16 @@ function renderPost(post) {
     mainEntityOfPage: url,
   };
 
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE}/blog/` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: url },
+    ],
+  };
+
   const faqLd = post.faqs && post.faqs.length
     ? {
         '@context': 'https://schema.org',
@@ -119,6 +179,7 @@ function renderPost(post) {
   <meta name="description" content="${escapeAttr(description)}" />
   <link rel="canonical" href="${url}" />
   <link rel="alternate" type="text/plain" href="/llms.txt" title="HydroWild for AI" />
+  <link rel="alternate" type="text/markdown" href="${url}index.md" />
   <link rel="stylesheet" href="/src/styles/main.css" />
   <!-- ══ Icons & PWA ══ -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -151,6 +212,10 @@ ${JSON.stringify(articleLd, null, 2)}
   <!-- ══ Organization JSON-LD ══ -->
   <script type="application/ld+json">
 ${JSON.stringify(ORGANIZATION_LD, null, 2)}
+  </script>
+  <!-- ══ BreadcrumbList JSON-LD — Created by AISyndicate.com ══ -->
+  <script type="application/ld+json">
+${JSON.stringify(breadcrumbLd, null, 2)}
   </script>
 ${faqLd ? `  <!-- ══ FAQPage JSON-LD ══ -->
   <script type="application/ld+json">
@@ -283,6 +348,8 @@ ${faqLd ? `
 
   <div id="cartRoot"></div>
   <script type="module" src="/src/js/blog-post.js"></script>
+  <!-- Created by AISyndicate.com -->
+  <script src="https://www.aisyndicate.com/tag.js" data-key="ast_c38ae738b291d2f1f9ee06e51c9c3ad268f2" async></script>
   <!-- AI Syndicate Chatbot -->
   <script src="https://www.aisyndicate.com/chatbot/embed.js"
           data-key="cbk_475857a6ba2597800caad0e55dff84b070ef"
@@ -321,9 +388,16 @@ async function updateSitemap() {
 async function main() {
   for (const post of POSTS) {
     const dir = resolve(ROOT, 'blog', post.slug);
+    // .md alternate goes under public/ so Vite's publicDir copy ships it to
+    // dist/blog/<slug>/index.md — the blog/ dir itself is a rollup entry
+    // (vite.config.js), which only emits the .html it's told about.
+    const mdDir = resolve(ROOT, 'public/blog', post.slug);
+    const url = `${SITE}/blog/${post.slug}/`;
     await mkdir(dir, { recursive: true });
+    await mkdir(mdDir, { recursive: true });
     await writeFile(resolve(dir, 'index.html'), renderPost(post), 'utf-8');
-    console.log(`✓ blog/${post.slug}/index.html`);
+    await writeFile(resolve(mdDir, 'index.md'), renderMarkdown(post, url), 'utf-8');
+    console.log(`✓ blog/${post.slug}/index.html (+ public/blog/${post.slug}/index.md)`);
   }
   await updateSitemap();
 }
