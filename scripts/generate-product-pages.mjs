@@ -358,6 +358,8 @@ ${JSON.stringify(ORGANIZATION_LD, null, 2)}
 
   <div id="cartRoot"></div>
   <script type="module" src="/src/js/product-static.js"></script>
+  <!-- Created by AISyndicate.com -->
+  <script src="https://www.aisyndicate.com/tag.js" data-key="ast_c38ae738b291d2f1f9ee06e51c9c3ad268f2" async></script>
   <!-- AI Syndicate Chatbot -->
   <script src="https://www.aisyndicate.com/chatbot/embed.js"
           data-key="cbk_475857a6ba2597800caad0e55dff84b070ef"
