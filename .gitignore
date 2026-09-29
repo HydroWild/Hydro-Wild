@@ -7,6 +7,7 @@ dist/
 # Generated blog post pages (see scripts/generate-blog-posts.mjs) — reproduced
 # from src/data/posts.js on every predev/prebuild run, not hand-maintained.
 /blog/
+/public/blog/
 
 # Generated product pages (see scripts/generate-product-pages.mjs) — reproduced
 # from src/data/products.js on every predev/prebuild run, not hand-maintained.
